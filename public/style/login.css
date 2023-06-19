@@ -1,0 +1,71 @@
+:root {
+      --background-blue: #004E98;
+      --font-family: "Avenir", sans-serif;;
+}
+    
+
+* {
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-family);
+}
+
+.flex-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh; /* Set the height of the flex-container */
+}
+
+.flex-container div {
+      width: 100%; /* Remove the 'vw' unit to allow flexbox to work properly */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+}
+
+#right {
+      height: 100vh;
+      background-color: #004E98;
+}
+
+
+
+
+/* FORM */
+
+form {
+      display: flex;
+      flex-direction: column;
+      max-width: 400px;
+      margin: 0 auto;
+      gap: 25px;
+}
+
+label {
+      margin-bottom: 8px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="submit"] {
+      width: 30vw;
+      max-width: 35vw;
+      height: 35px;
+      border-radius: 8px;
+      padding: 8px;
+      border: 1px solid #ccc;
+}
+
+input[type="submit"] {
+      color: white;
+      background-color: var(--background-blue);
+      border: none;
+      cursor: pointer;
+      margin-top: 12px;
+}
+
+input, label,span {
+      display:block;
+}

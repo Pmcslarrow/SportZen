@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Website</title>
+  <!-- Add your CSS stylesheets or external stylesheets here -->
+  <link rel="stylesheet" href="/style/login.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Avenir">
+</head>
+<body>
+
+      <div class="flex-container">
+
+            <div>
+                  <form name="message" method="post" action="/auth">
+                        <span>
+                              <label for="name">Name</label>
+                              <input id="name" type="text" value="" name="name" required>
+                        </span>
+
+                        <span>
+                              <label for="username">Username</label>
+                              <input id="username" type="text" value="" name="username" required>
+                        </span>
+
+                        <span>
+                              <label for="password">Password</label>
+                              <input id="password" type="text" value="" name="password" required >
+                        </span>
+
+                        <span>
+                              <input type="submit" id="submit" value="Get Started">
+                        </span>
+                    </form>
+            </div>
+
+            <div id="right">
+                  <img src="/GRAPH.svg" alt="Image of an imaginary graph.">
+
+            </div>
+
+      </div>
+      
+
+
+
+  <script src="../server.js"></script>
+</body>
+</html>
