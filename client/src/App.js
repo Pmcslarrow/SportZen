@@ -11,6 +11,13 @@ function App() {
   }, [isAuthenticated]);
 
   return (
+    <Dashboard />
+  )
+
+
+  /*
+  WORKING SOLUTION > JUST USE DASHBOARD RIGHT NOW UNTIL YOU FINISH IT
+  return (
     <Router>
       <Switch>
         <Route path="/login" render={(props) => <LoginPage {...props} setAuthenticationStatus={setAuthenticationStatus} />} />
@@ -22,6 +29,7 @@ function App() {
       </Switch>
     </Router>
   );
+  */
 }
 
 const ProtectedRoute = ({ component: Component, isAuthenticated, ...rest }) => {

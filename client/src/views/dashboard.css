@@ -1,26 +1,96 @@
+:root {
+      --background-blue: #004E98;
+      --orange: #FF6700;
+      --font-family: "Avenir", sans-serif;
+}
+    
 .dashboard-container {
       display: flex;
       height: 100vh;
-    }
-    
-    .navigation-bar {
-      width: 20%;
-      background-color: #f5f5f5;
-      padding: 20px;
-    }
-    
-    .nav-group {
+}
+
+.navigation-bar {
       display: flex;
       flex-direction: column;
-      margin-bottom: 20px;
-    }
-    
-    .nav-item {
-      margin-bottom: 10px;
-    }
-    
-    .main-content {
+      width: 15%;
+      background-color: #f5f5f5;
+      padding: 20px;
+      justify-content: space-between;
+}
+
+.nav-group {
+      display: flex;
+      flex-direction: column;
+      align-items: left;
+}
+
+.nav-item {
+      margin: 6px;
+      background-color: var(--background-blue);
+      padding: 8px;
+      border-radius: 10px;
+      color: white;
+      transition: transform 0.4s ease, background-color 0.4s ease;
+}
+
+
+.nav-item:hover {
+      transform: translate(5px);
+      cursor: pointer;
+      background-color: var(--orange);
+}
+
+
+
+/* GRID */
+
+.main-content {
       flex: 1;
-      background-color: red;
-    }
-    
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #f5f5f5;
+}
+
+.grid-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: 40% 60% auto;
+      grid-gap: 10px;
+      width: 98%;
+      height: 92%;
+}
+
+.grid-item {
+      background-color: var(--grid-item-color);
+      color: black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: bold;
+      border: 2px solid black;
+}
+
+.item9 {
+      grid-column: span 3; /* Spanning three columns */
+}
+
+.item4 {
+      grid-row: span 2;
+}
+
+.table-container {
+/* Styles for the table container inside item9 */
+      height: 100%;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+}
+
+.item10, .item11, .item12 {
+      display: none;
+}
+
+
