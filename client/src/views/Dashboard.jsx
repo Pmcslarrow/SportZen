@@ -1,7 +1,24 @@
 import React from 'react';
 import './dashboard.css';
+import { Link, Route, Switch } from "react-router-dom";
+
 
 const Dashboard = () => {
+
+  function handleSurvey(e) {
+    e.preventDefault();
+  }
+
+  const LinkStyle = {
+    fontFamily: 'inherit',
+    fontSize: 'inherit',
+    fontWeight: 'inherit',
+    fontStyle: 'inherit',
+    textDecoration: 'inherit',
+    color: 'inherit',
+    // Add any other desired h3 styles
+};
+
   return (
     <div className="dashboard-container">
       <div className="navigation-bar">
@@ -10,7 +27,7 @@ const Dashboard = () => {
             <h3>Dashboard</h3>
           </div>
           <div className="nav-item">
-            <h3>Survey</h3>
+            <h3><Link to="/survey" style={LinkStyle}>Survey</Link></h3>
           </div>
         </div>
         <div className="nav-group">

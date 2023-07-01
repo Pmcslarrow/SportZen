@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+
+
 import './login.css';
 
 function LoginPage({ setAuthenticationStatus }) {
+      const history = useHistory();
       const [name, setName] = useState('');
       const [username, setUsername] = useState('');
       const [password, setPassword] = useState('');
-      const history = useHistory();
     
       const handleSubmit = (e) => {
         e.preventDefault();
@@ -31,7 +33,7 @@ function LoginPage({ setAuthenticationStatus }) {
             setAuthenticationStatus(isAuth);
 
             if (isAuth) {
-                  history.push('/dashboard');
+              history.push('/');
             }
           })
           .catch((error) => {

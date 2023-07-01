@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Redirect, Route, Switch, BrowserRouter as Router } from 'react-router-dom';
 import LoginPage from './views/LoginPage';
 import Dashboard from './views/Dashboard';
+import Survey from './views/Survey';
 
 function App() {
   const [isAuthenticated, setAuthenticationStatus] = useState(false);
@@ -10,29 +11,24 @@ function App() {
     console.log(isAuthenticated);
   }, [isAuthenticated]);
 
-  return (
-    <Dashboard />
-  )
 
-
-  /*
-  WORKING SOLUTION > JUST USE DASHBOARD RIGHT NOW UNTIL YOU FINISH IT
   return (
-    <Router>
+    <Router >
       <Switch>
-        <Route path="/login" render={(props) => <LoginPage {...props} setAuthenticationStatus={setAuthenticationStatus} />} />
-        <ProtectedRoute
-          path="/dashboard"
-          component={Dashboard}
-          isAuthenticated={isAuthenticated}
-        />
+        <Route path="/login" render={(props) => <LoginPage {...props} setAuthenticationStatus={setAuthenticationStatus}  />} />
+        <Route path="/survey" render={(props) => <Survey {...props} setAuthenticationStatus={setAuthenticationStatus}  />} />
+
+        <ProtectedRoute path="/" component={Dashboard} isAuthenticated={isAuthenticated}  />
+        <ProtectedRoute path="/dashboard" component={Dashboard} isAuthenticated={isAuthenticated}  />
+
       </Switch>
     </Router>
   );
-  */
 }
 
-const ProtectedRoute = ({ component: Component, isAuthenticated, ...rest }) => {
+
+// If it is authenticated, then it goes to the component you pass. Otherwise, login page. 
+export const ProtectedRoute = ({ component: Component, isAuthenticated,...rest }) => {
   const loginPath = '/login';
   console.log('isAuthenticated:', isAuthenticated);
   return (
@@ -40,7 +36,7 @@ const ProtectedRoute = ({ component: Component, isAuthenticated, ...rest }) => {
       {...rest}
       render={(props) =>
         isAuthenticated ? (
-          <Component {...props} />
+          <Component {...props}  />
         ) : (
           <Redirect
             to={{
@@ -54,4 +50,4 @@ const ProtectedRoute = ({ component: Component, isAuthenticated, ...rest }) => {
   );
 };
 
-export default App;
+export default App

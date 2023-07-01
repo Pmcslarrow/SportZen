@@ -8,5 +8,5 @@ app.listen(PORT, () => {
 
 // Fake authentication right now. Will implement database later!!!!!
 app.post('/auth', (req, res) => {
-      res.json({ isAuthenticated : true });
+  res.json({ isAuthenticated : true });
 });
