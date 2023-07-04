@@ -27,7 +27,9 @@ const Dashboard = () => {
             <h3>Dashboard</h3>
           </div>
           <div className="nav-item">
-            <h3><Link to="/survey" style={LinkStyle}>Survey</Link></h3>
+          <Link to="/survey" style={LinkStyle}>
+            <h3>Survey</h3>
+          </Link>
           </div>
         </div>
         <div className="nav-group">
