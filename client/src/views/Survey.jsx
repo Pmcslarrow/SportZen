@@ -8,16 +8,24 @@ import './survey.css';
 function Survey({ setAuthenticationStatus }) {
     const history = useHistory();
     const MIN_PAGE = 0;
-    const MAX_PAGE = 7;
+    const MAX_PAGE = 6;
     const [pageNumber, setPageNumber] = useState(0);
     const [sleepHours, setSleepHours] = useState(0);
     const [activeItem, setActiveItem] = useState(null);
-    const [selectedNumber, setSelectedNumber] = useState(0);
+    const [pageThreeNumber, setPageThreeNumber] = useState(0);
+    const [pageFourNumber, setPageFourNumber] = useState(0);
+    const [pageFiveNumber, setPageFiveNumber] = useState(0);
+    const [pageSixActiveItem, setPageSixActiveItem] = useState(null);
+    const [otherInformation, setOtherInformation] = useState("");
 
     const pages = [
       <Page1 sleepHours={sleepHours} setSleepHours={setSleepHours} />,
       <Page2 activeItem={activeItem} setActiveItem={setActiveItem}/>,
-      <Page3 selectedNumber={selectedNumber} setSelectedNumber={setSelectedNumber}></Page3>
+      <SingleNumberSelection header={"How would you rank your overall mental health? (1 being worst and 10 being best)"} currentValue={pageThreeNumber} setCurrentValue={setPageThreeNumber} />,  // page3
+      <SingleNumberSelection header={"How would you rank your overall physical health? (1 being worst and 10 being best)"} currentValue={pageFourNumber} setCurrentValue={setPageFourNumber} />,  // page4
+      <SingleNumberSelection header={"How many workouts did you complete yesterday?"} currentValue={pageFiveNumber} setCurrentValue={setPageFiveNumber} />,                                       // page5
+      <Page6 pageSixActiveItem={pageSixActiveItem} setPageSixActiveItem={setPageSixActiveItem}/>,
+      <Page7 otherInformation={otherInformation} setOtherInformation={setOtherInformation}/>
     ];
 
      /* Handling the click of prev and next */
@@ -34,6 +42,17 @@ function Survey({ setAuthenticationStatus }) {
             setPageNumber(pageNumber + 1);
         }
     }
+
+    function handleSubmit(e) {
+      console.log("sleepHours:", sleepHours);
+      console.log("activeItem:", activeItem);
+      console.log("pageThreeNumber:", pageThreeNumber);
+      console.log("pageFourNumber:", pageFourNumber);
+      console.log("pageFiveNumber:", pageFiveNumber);
+      console.log("pageSixActiveItem:", pageSixActiveItem);
+      console.log("otherInformation:", otherInformation);
+    }
+
 
     const LinkStyle = {
         fontFamily: 'inherit',
@@ -76,26 +95,33 @@ function Survey({ setAuthenticationStatus }) {
         { /* BOILERPLATE NAV BAR END */ }
 
         <div className="main-content">
-            <p>{pageNumber}/7</p>
+            <p>{pageNumber}/6</p>
             {pages[pageNumber]}
             <div className='flex-row'>
-                <div onClick = {handlePrev}>Prev</div>
-                <div onClick = {handleNext}>Next</div>
+              {pageNumber !== MAX_PAGE ? (
+                <>
+                  <div onClick={handlePrev}>Prev</div>
+                  <div onClick={handleNext}>Next</div>
+                </>
+              ) : (
+                <>
+                  <div onClick={handlePrev}>Prev</div>
+                  <div onClick={handleSubmit}>Submit</div>
+                </>
+              )}
             </div>
         </div>
     </div>
     );
   }
 
+    /* PAGES */
+
   function Page1({ sleepHours, setSleepHours }) {
     const handleSliderChange = (event) => {
       const value = parseInt(event.target.value);
       setSleepHours(value);
     };
-
-    useEffect(() => {
-      console.log(sleepHours);
-    }, [sleepHours]);
 
     return (
       <>
@@ -115,6 +141,7 @@ function Survey({ setAuthenticationStatus }) {
       </>
     );
   }
+
 
   function Page2({ activeItem, setActiveItem }) {
 
@@ -157,27 +184,108 @@ function Survey({ setAuthenticationStatus }) {
     );
   }
 
-  function Page3({selectedNumber, setSelectedNumber}) {
+  // Serves as a component that limits re-use by using the same format for any page that calls it --> it is primarily used for single number entries between 0 and 10.
+  function SingleNumberSelection({header, currentValue, setCurrentValue}) {
 
-
-    const handleNumberChange = (event) => {
-      const value = parseInt(event.target.value, 10);
-      setSelectedNumber(value);
-    };
+    function handleChange(e) {
+      let value = e.target.value;
+      setCurrentValue(value);
+    }
 
     return (
-      <div className='page3'>
-        <h1>How would you rank your overall mental health? (0 being poor and 10 being excellent)</h1>
+      <div className='page4'>
+        <h1>{header}</h1>
         <input
           id="numberInput"
           type="number"
           min={0}
           max={10}
-          value={selectedNumber}
-          onChange={handleNumberChange}
+          value={currentValue}
+          onChange={handleChange}
         />
       </div>
     );
   }
+
+  function Page6 ({ pageSixActiveItem, setPageSixActiveItem }) {
+
+
+    const handleListItemClick = (item) => {
+      setPageSixActiveItem(item);
+    };
+
+    return (
+      <div className='page2'>
+        <h1>How would you rank your overall sleep quality last night?</h1>
+        <ul>
+          <li
+            className={pageSixActiveItem === 'Excellent' ? 'active' : ''}
+            onClick={() => handleListItemClick('Excellent')}
+
+          >
+            Excellent
+          </li>
+          <li
+            className={pageSixActiveItem === 'Good' ? 'active' : ''}
+            onClick={() => handleListItemClick('Good')}
+          >
+            Good
+          </li>
+          <li
+            className={pageSixActiveItem === 'Fair' ? 'active' : ''}
+            onClick={() => handleListItemClick('Fair')}
+          >
+            Fair
+          </li>
+          <li
+            className={pageSixActiveItem === 'Poor' ? 'active' : ''}
+            onClick={() => handleListItemClick('Poor')}
+          >
+            Poor
+          </li>
+
+          <li
+            className={pageSixActiveItem === 'N/A' ? 'active' : ''}
+            onClick={() => handleListItemClick('N/A')}
+          >
+            N/A
+          </li>
+        </ul>
+      </div>
+    );
+  }
+
+  function Page7 ({otherInformation, setOtherInformation}) {
+
+    function handleTyping(event) {
+      let typed_value = event.target.value;
+      /* Regex this for malicious intent */
+      const verified = true
+
+      if (verified) {
+        setOtherInformation(typed_value)
+      }
+      return
+    }
+
+    return (
+      <div className='page7'>
+        <h1>Is there any additional information or feedback you would like to share with us? This can be related to yourself, your teammates, or the coaching staff. Feel free to write your thoughts below.</h1>
+        <textarea name="Other Information" cols="30" rows="10" maxLength={1500} onChange={handleTyping}></textarea>
+      </div>
+    )
+  }
+
+
+
+
+
+
+
+
+
+
+
+
 
   export default Survey;
