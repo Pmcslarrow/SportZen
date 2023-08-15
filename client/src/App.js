@@ -11,36 +11,43 @@ function App() {
     console.log(isAuthenticated);
   }, [isAuthenticated]);
 
-
   return (
-    <Router >
+    <Router>
       <Switch>
-        <Route path="/login" render={(props) => <LoginPage {...props} setAuthenticationStatus={setAuthenticationStatus}  />} />
-        <Route path="/survey" render={(props) => <Survey {...props} setAuthenticationStatus={setAuthenticationStatus}  />} />
 
-        <ProtectedRoute path="/" component={Dashboard} isAuthenticated={isAuthenticated}  />
-        <ProtectedRoute path="/dashboard" component={Dashboard} isAuthenticated={isAuthenticated}  />
+        <Route path="/" exact>
+          {isAuthenticated ? <Dashboard /> : <LoginPage setAuthenticationStatus={setAuthenticationStatus} />}
+        </Route>
+
+        <Route path="/survey" render={(props) => <Survey {...props} setAuthenticationStatus={setAuthenticationStatus}  />} />
+        
+        <ProtectedRoute
+          path="/dashboard"
+          component={Dashboard}
+          isAuthenticated={isAuthenticated}
+          failedRoute={"/"}
+        />
 
       </Switch>
     </Router>
   );
+
 }
 
 
 // If it is authenticated, then it goes to the component you pass. Otherwise, login page. 
-export const ProtectedRoute = ({ component: Component, isAuthenticated,...rest }) => {
-  const loginPath = '/login';
+export const ProtectedRoute = ({ component: Component, isAuthenticated, failedRoute, ...rest }) => {
   console.log('isAuthenticated:', isAuthenticated);
   return (
     <Route
       {...rest}
       render={(props) =>
         isAuthenticated ? (
-          <Component {...props}  />
+          <Component {...props} />
         ) : (
           <Redirect
             to={{
-              pathname: loginPath,
+              pathname: failedRoute,
               state: { from: props.location }
             }}
           />

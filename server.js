@@ -10,3 +10,7 @@ app.listen(PORT, () => {
 app.post('/auth', (req, res) => {
   res.json({ isAuthenticated : true });
 });
+
+app.post('/submit', (req, res) => {
+  console.log("THE BACKEND RECEIVED THE DATA")
+})

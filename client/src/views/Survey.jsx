@@ -2,20 +2,21 @@ import React, { useState } from 'react';
 import { useEffect } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import './survey.css';
+import axios from 'axios';
+
 
 
 
 function Survey({ setAuthenticationStatus }) {
     const history = useHistory();
     const MIN_PAGE = 0;
-    const MAX_PAGE = 6;
+    const MAX_PAGE = 5;
     const [pageNumber, setPageNumber] = useState(0);
     const [sleepHours, setSleepHours] = useState(0);
     const [activeItem, setActiveItem] = useState(null);
     const [pageThreeNumber, setPageThreeNumber] = useState(0);
     const [pageFourNumber, setPageFourNumber] = useState(0);
     const [pageFiveNumber, setPageFiveNumber] = useState(0);
-    const [pageSixActiveItem, setPageSixActiveItem] = useState(null);
     const [otherInformation, setOtherInformation] = useState("");
 
     const pages = [
@@ -23,20 +24,35 @@ function Survey({ setAuthenticationStatus }) {
       <Page2 activeItem={activeItem} setActiveItem={setActiveItem}/>,
       <SingleNumberSelection header={"How would you rank your overall mental health? (1 being worst and 10 being best)"} currentValue={pageThreeNumber} setCurrentValue={setPageThreeNumber} />,  // page3
       <SingleNumberSelection header={"How would you rank your overall physical health? (1 being worst and 10 being best)"} currentValue={pageFourNumber} setCurrentValue={setPageFourNumber} />,  // page4
-      <SingleNumberSelection header={"How many workouts did you complete yesterday?"} currentValue={pageFiveNumber} setCurrentValue={setPageFiveNumber} />,                                       // page5
-      <Page6 pageSixActiveItem={pageSixActiveItem} setPageSixActiveItem={setPageSixActiveItem}/>,
+      <SingleNumberSelection header={"How many workouts did you complete today?"} currentValue={pageFiveNumber} setCurrentValue={setPageFiveNumber} />,                                       // page5
       <Page7 otherInformation={otherInformation} setOtherInformation={setOtherInformation}/>
     ];
 
+    const variables = [
+      sleepHours,
+      activeItem,
+      pageThreeNumber,
+      pageFourNumber,
+      pageFiveNumber,
+      otherInformation
+    ]
+
      /* Handling the click of prev and next */
-     function handlePrev(e) {
+     function handlePrev(e, pageIndex) {
+
         if (pageNumber === MIN_PAGE) { return }
         else {
             setPageNumber(pageNumber - 1);
         }
     }
 
-    function handleNext(e) {
+    function handleNext(e, pageIndex) {
+        let v = variables[pageIndex]
+
+        if (v === null) {
+          return
+        }
+
         if (pageNumber === MAX_PAGE) { return
         } else {
             setPageNumber(pageNumber + 1);
@@ -44,14 +60,31 @@ function Survey({ setAuthenticationStatus }) {
     }
 
     function handleSubmit(e) {
-      console.log("sleepHours:", sleepHours);
-      console.log("activeItem:", activeItem);
-      console.log("pageThreeNumber:", pageThreeNumber);
-      console.log("pageFourNumber:", pageFourNumber);
-      console.log("pageFiveNumber:", pageFiveNumber);
-      console.log("pageSixActiveItem:", pageSixActiveItem);
-      console.log("otherInformation:", otherInformation);
+      const data = {
+        sleepHours: sleepHours,
+        sleepQuality: activeItem,
+        mentalHealth: pageThreeNumber,
+        physicalHealth: pageFourNumber,
+        numWorkouts: pageFiveNumber,
+        otherInformation: otherInformation
+      };
+    
+      const jsonData = JSON.stringify(data);
+      console.log(jsonData);
+
+      axios.post('https://localhost:3000/submit', jsonData)
+        .then(response => {
+          console.log('Data successfully posted:', response.data);
+
+          // Redirect to /dashboard after successful POST
+          history.push('/dashboard');
+        })
+        .catch(error => {
+          console.error('Error posting data:', error);
+        });
+
     }
+    
 
 
     const LinkStyle = {
@@ -95,17 +128,17 @@ function Survey({ setAuthenticationStatus }) {
         { /* BOILERPLATE NAV BAR END */ }
 
         <div className="main-content">
-            <p>{pageNumber}/6</p>
+            <p>{pageNumber}/5</p>
             {pages[pageNumber]}
             <div className='flex-row'>
               {pageNumber !== MAX_PAGE ? (
                 <>
-                  <div onClick={handlePrev}>Prev</div>
-                  <div onClick={handleNext}>Next</div>
+                  <div onClick={(e) => handlePrev(e, pageNumber)}>Prev</div>
+                  <div onClick={(e) => handleNext(e, pageNumber)}>Next</div>
                 </>
               ) : (
                 <>
-                  <div onClick={handlePrev}>Prev</div>
+                  <div onClick={(e) => handlePrev(e, pageNumber)}>Prev</div>
                   <div onClick={handleSubmit}>Submit</div>
                 </>
               )}
@@ -118,6 +151,7 @@ function Survey({ setAuthenticationStatus }) {
     /* PAGES */
 
   function Page1({ sleepHours, setSleepHours }) {
+    
     const handleSliderChange = (event) => {
       const value = parseInt(event.target.value);
       setSleepHours(value);
@@ -135,7 +169,7 @@ function Survey({ setAuthenticationStatus }) {
             className="slider"
             id="myRange"
             onChange={handleSliderChange}
-          />
+            />
           <p>{sleepHours}</p>
         </div>
       </>
@@ -203,54 +237,6 @@ function Survey({ setAuthenticationStatus }) {
           value={currentValue}
           onChange={handleChange}
         />
-      </div>
-    );
-  }
-
-  function Page6 ({ pageSixActiveItem, setPageSixActiveItem }) {
-
-
-    const handleListItemClick = (item) => {
-      setPageSixActiveItem(item);
-    };
-
-    return (
-      <div className='page2'>
-        <h1>How would you rank your overall sleep quality last night?</h1>
-        <ul>
-          <li
-            className={pageSixActiveItem === 'Excellent' ? 'active' : ''}
-            onClick={() => handleListItemClick('Excellent')}
-
-          >
-            Excellent
-          </li>
-          <li
-            className={pageSixActiveItem === 'Good' ? 'active' : ''}
-            onClick={() => handleListItemClick('Good')}
-          >
-            Good
-          </li>
-          <li
-            className={pageSixActiveItem === 'Fair' ? 'active' : ''}
-            onClick={() => handleListItemClick('Fair')}
-          >
-            Fair
-          </li>
-          <li
-            className={pageSixActiveItem === 'Poor' ? 'active' : ''}
-            onClick={() => handleListItemClick('Poor')}
-          >
-            Poor
-          </li>
-
-          <li
-            className={pageSixActiveItem === 'N/A' ? 'active' : ''}
-            onClick={() => handleListItemClick('N/A')}
-          >
-            N/A
-          </li>
-        </ul>
       </div>
     );
   }
