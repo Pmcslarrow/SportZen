@@ -1,45 +1,45 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-
+import { auth } from "../config/firebase"
+import { signOut, signInWithEmailAndPassword } from 'firebase/auth'
 
 import './login.css';
 
 function LoginPage({ setAuthenticationStatus }) {
       const history = useHistory();
-      const [name, setName] = useState('');
-      const [username, setUsername] = useState('');
+      const [email, setEmail] = useState('');
       const [password, setPassword] = useState('');
-    
-      const handleSubmit = (e) => {
-        e.preventDefault();
-    
-        // Perform form validation if needed
-    
-        // Make a POST request to the /auth endpoint
-        fetch('/auth', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            name,
-            username,
-            password,
-          }),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            let isAuth = data.isAuthenticated
-            setAuthenticationStatus(isAuth);
 
-            if (isAuth) {
-              history.push('/');
-            }
-          })
-          .catch((error) => {
-            console.log('Error:', error);
-          });
+      useEffect(() => {
+        logout()
+        setAuthenticationStatus(false)
+      }, [])
+
+      console.log(auth?.currentUser?.email)
+    
+      const handleSubmit = async (e) => {
+        e.preventDefault()
+        try {
+          await signInWithEmailAndPassword(auth, email, password)
+          setAuthenticationStatus(true)
+          history.push("/dashboard")
+        } catch(err) {
+          console.log(err)          
+        }
       };
+
+      const logout = async () => {
+        try {
+          await signOut(auth)
+        } catch (err) {
+          console.log(err)
+        }
+      }
+
+      const createAccount = () => {
+        history.push("/createAccount")
+      }
+      
     
 
   return (
@@ -47,23 +47,12 @@ function LoginPage({ setAuthenticationStatus }) {
       <div>
         <form name="message" onSubmit={handleSubmit}>
           <span>
-            <label htmlFor="name">Name</label>
+            <label htmlFor="Email">Email</label>
             <input
-              id="name"
+              id="email"
               type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
-          </span>
-
-          <span>
-            <label htmlFor="username">Username</label>
-            <input
-              id="username"
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
           </span>
@@ -80,8 +69,13 @@ function LoginPage({ setAuthenticationStatus }) {
           </span>
 
           <span>
-            <input type="submit" id="submit" value="Get Started" />
+            <input type="submit" id="submit" value="Login" />
           </span>
+
+          <span>
+            <button onClick={createAccount}>Create Account</button>
+          </span>
+
         </form>
       </div>
 

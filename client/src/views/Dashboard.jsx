@@ -1,23 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './dashboard.css';
-import { Link, Route, Switch } from "react-router-dom";
+import { Link, useHistory } from 'react-router-dom';
+import { signOut } from 'firebase/auth';
+import { auth } from '../config/firebase';
+
+const Dashboard = ({setAuthenticationStatus}) => {
+  const history = useHistory();
 
 
-const Dashboard = () => {
+  const logout = async () => {
+    try {
+      await signOut(auth);
+      setAuthenticationStatus(false)
+    } catch (err) {
+      console.error('Error during logout:', err);
+    }
+  };
 
-  function handleSurvey(e) {
-    e.preventDefault();
+  const survey = async () => {
+    history.push("/survey")
   }
-
-  const LinkStyle = {
-    fontFamily: 'inherit',
-    fontSize: 'inherit',
-    fontWeight: 'inherit',
-    fontStyle: 'inherit',
-    textDecoration: 'inherit',
-    color: 'inherit',
-    // Add any other desired h3 styles
-};
 
   return (
     <div className="dashboard-container">
@@ -26,18 +28,16 @@ const Dashboard = () => {
           <div className="nav-item">
             <h3>Dashboard</h3>
           </div>
-          <div className="nav-item">
-          <Link to="/survey" style={LinkStyle}>
-            <h3>Survey</h3>
-          </Link>
+          <div className="nav-item" onClick={survey}>
+              <h3>Survey</h3>
           </div>
         </div>
         <div className="nav-group">
           <div className="nav-item">
             <h3>Profile</h3>
           </div>
-          <div className="nav-item">
-            <h3>Logout</h3>
+          <div className="nav-item" onClick={logout}>
+              <h3>Logout</h3>
           </div>
         </div>
       </div>

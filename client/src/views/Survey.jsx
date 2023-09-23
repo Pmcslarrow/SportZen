@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useEffect } from 'react';
 import { useHistory, Link } from 'react-router-dom';
+import { signOut } from 'firebase/auth';
+import { auth } from '../config/firebase';
 import './survey.css';
-import axios from 'axios';
 
 
 
@@ -37,6 +38,16 @@ function Survey({ setAuthenticationStatus }) {
       otherInformation
     ]
 
+    const logout = async () => {
+      try {
+        await signOut(auth);
+        setAuthenticationStatus(false)
+        history.push("/")  
+      } catch (err) {
+        console.error('Error during logout:', err);
+      }
+    };
+
      /* Handling the click of prev and next */
      function handlePrev(e, pageIndex) {
 
@@ -68,20 +79,7 @@ function Survey({ setAuthenticationStatus }) {
         numWorkouts: pageFiveNumber,
         otherInformation: otherInformation
       };
-    
-      const jsonData = JSON.stringify(data);
-      console.log(jsonData);
-
-      axios.post('https://localhost:3000/submit', jsonData)
-        .then(response => {
-          console.log('Data successfully posted:', response.data);
-
-          // Redirect to /dashboard after successful POST
-          history.push('/dashboard');
-        })
-        .catch(error => {
-          console.error('Error posting data:', error);
-        });
+      console.log("Survey.jsx (handleSubmit)")
 
     }
     
@@ -119,7 +117,7 @@ function Survey({ setAuthenticationStatus }) {
             <div className="nav-item">
                 <h3>Profile</h3>
             </div>
-            <div className="nav-item">
+            <div className="nav-item" onClick={logout}>
                 <h3>Logout</h3>
             </div>
             </div>
@@ -139,7 +137,9 @@ function Survey({ setAuthenticationStatus }) {
               ) : (
                 <>
                   <div onClick={(e) => handlePrev(e, pageNumber)}>Prev</div>
-                  <div onClick={handleSubmit}>Submit</div>
+                  <Link to="/" style={LinkStyle}>
+                    <div onClick={handleSubmit}>Submit</div>
+                  </Link>
                 </>
               )}
             </div>
