@@ -15,3 +15,5 @@ SportZen is a React and Firebase application designed to enhance communication b
 We have exciting plans for the future of SportZen, including:
 
 - **Motivation Button**: An upcoming feature will allow players to interact with a motivation button. Use it to inspire and support each other, fostering team camaraderie and motivation.
+
+- **Direct Chat and Shared Team Calendar**: We plan to implement a direct chat area and a shared team calendar. Coaches and players can collaborate and stay aligned by utilizing these features. The shared team calendar will be fully editable by the coaching staff, ensuring everyone is on the same page regarding practice schedules, games, and events.
