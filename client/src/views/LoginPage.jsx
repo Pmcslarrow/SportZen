@@ -9,20 +9,29 @@ function LoginPage({ setAuthenticationStatus }) {
       const history = useHistory();
       const [email, setEmail] = useState('');
       const [password, setPassword] = useState('');
+      const [errorStatus, setError] = useState(false)
+      const [errorMessage, setMessage] = useState('')
 
       useEffect(() => {
         logout()
         setAuthenticationStatus(false)
       }, [])
 
-      console.log(auth?.currentUser?.email)
+      //console.log(auth?.currentUser?.email)
+      console.log(auth?.currentUser)
     
       const handleSubmit = async (e) => {
         e.preventDefault()
         try {
-          await signInWithEmailAndPassword(auth, email, password)
-          setAuthenticationStatus(true)
-          history.push("/dashboard")
+          const userCredential = await signInWithEmailAndPassword(auth, email, password);
+
+          if (userCredential.user.emailVerified) {
+            setAuthenticationStatus(true);
+            history.push("/dashboard");
+          } else {
+            setMessage("Please verify your email before logging in.");
+            setError(true);
+          }
         } catch(err) {
           console.log(err)          
         }
@@ -73,9 +82,10 @@ function LoginPage({ setAuthenticationStatus }) {
           </span>
 
           <span>
-            <button onClick={createAccount}>Create Account</button>
+            <input type="button" value="Create Account" onClick={createAccount} />
           </span>
 
+          {errorStatus && <p> {errorMessage} </p>}
         </form>
       </div>
 

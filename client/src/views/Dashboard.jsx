@@ -8,6 +8,10 @@ const Dashboard = ({setAuthenticationStatus}) => {
   const history = useHistory();
 
 
+  useEffect(() => {
+    console.log(auth?.currentUser)
+  })
+
   const logout = async () => {
     try {
       await signOut(auth);
@@ -20,6 +24,7 @@ const Dashboard = ({setAuthenticationStatus}) => {
   const survey = async () => {
     history.push("/survey")
   }
+  
 
   return (
     <div className="dashboard-container">

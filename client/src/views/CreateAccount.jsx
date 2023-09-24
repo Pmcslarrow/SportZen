@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { auth } from "../config/firebase"
-import { createUserWithEmailAndPassword, signOut } from 'firebase/auth'
+import { createUserWithEmailAndPassword, signOut, sendEmailVerification } from 'firebase/auth'
 
 import './login.css';
 
@@ -17,20 +17,24 @@ function CreateAccount({ setAuthenticationStatus }) {
             setAuthenticationStatus(false)
       }, [])
 
-
-      console.log(auth?.currentUser?.email)
-    
       const handleSubmit = async (e) => {
         e.preventDefault()
         try {
           if (!email.endsWith("willamette.edu")) {
-            setMessage("Email does not belong to willamette.edu")
-            setError(true)
-            console.log("Email doesn't end with willamette.edu")
+            setMessage("Email does not belong to willamette.edu");
+            setError(true);
           } else {
-            await createUserWithEmailAndPassword(auth, email, password)
-            setAuthenticationStatus(true)
-            history.push("/dashboard")
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            
+            // Send email verification
+            await sendEmailVerification(userCredential.user);
+            setMessage("Please verify your email.")
+            setError(true)
+
+            // Redirect to login page after 5 seconds
+            setTimeout(() => {
+              history.push("/"); // Change "/login" to your actual login page route
+            }, 5000);
           }
         } catch(err) {
           console.log(err)
@@ -40,11 +44,11 @@ function CreateAccount({ setAuthenticationStatus }) {
           switch (errorCode) {
             case "auth/email-already-in-use":
                   setMessage("Email is already in use. Please choose another email.")
-                  console.log("Email error")
+                  //console.log("Email error")
                   break;
             case "auth/weak-password":
                   setMessage("Password is too weak. Please choose a stronger password.")
-                  console.log("Password error")
+                  //console.log("Password error")
                   break;
             default:
                   console.log("Error")
@@ -100,7 +104,7 @@ function CreateAccount({ setAuthenticationStatus }) {
           </span>
 
           <span>
-            <button onClick={loginPage}>Already have an account?</button>
+            <input type="button" value="Already have an account?" onClick={loginPage} />
           </span>
           
           {errorStatus && <p> {errorMessage} </p>}

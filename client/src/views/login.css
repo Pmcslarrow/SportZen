@@ -1,3 +1,4 @@
+/* BASE */
 :root {
       --background-blue: #004E98;
       --font-family: "Avenir", sans-serif;;
@@ -9,6 +10,8 @@
       padding: 0;
       font-family: var(--font-family);
 }
+
+/* FLEXBOX */
 
 .flex-container {
       display: flex;
@@ -39,34 +42,34 @@ form {
       flex-direction: column;
       max-width: 400px;
       margin: 0 auto;
-      gap: 25px;
+      gap: 20px;
 }
 
-label {
-      margin-bottom: 8px;
-}
+label { margin-bottom: 8px; }
+input { display: block; width: 30vw; }
+input, label { font-size: 16px; }
 
+/* Styling the input box sizing to be the same */
 input[type="text"],
 input[type="email"],
 input[type="password"],
 input[type="submit"] ,
+input[type="button"],
 button {
-      width: 30vw;
-      max-width: 35vw;
+      width: 25vw;
+      box-sizing: border-box;
       height: 35px;
       border-radius: 8px;
       padding: 8px;
       border: 1px solid #ccc;
 }
 
-input[type="submit"], button {
+/* Styling the bottom two buttons */
+input[type="submit"], input[type="button"] {
       color: white;
       background-color: var(--background-blue);
       border: none;
       cursor: pointer;
-      margin-top: 12px;
+      margin-top: 10px;
 }
 
-input, label,span {
-      display:block;
-}

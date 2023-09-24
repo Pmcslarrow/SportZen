@@ -12,9 +12,10 @@
 .navigation-bar {
       display: flex;
       flex-direction: column;
-      width: 15%;
-      background-color: #f5f5f5;
-      padding: 20px;
+      width: 12%;
+      min-width: 150px;
+      background-color:#FFFDFA;
+      padding: 15px;
       justify-content: space-between;
 }
 
@@ -50,7 +51,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: #f5f5f5;
+      background-color: #FFFDFA;
 }
 
 .grid-container {
