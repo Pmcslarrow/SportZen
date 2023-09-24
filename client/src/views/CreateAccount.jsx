@@ -3,8 +3,13 @@ import { useHistory } from 'react-router-dom';
 import { auth } from "../config/firebase"
 import { createUserWithEmailAndPassword, signOut, sendEmailVerification } from 'firebase/auth'
 import { handleError } from './ErrorHandler';
-
 import './login.css';
+
+// This component utilizes Firebase auth to create a new user, ensuring that the email domain is restricted to "willamette.edu".
+// After successfully creating an account, adhering to the specified email format and password requirements, the CreateAccount
+// function component employs setTimeout to display the message "Please verify your email" for a duration of five seconds.
+// Following this, the user is automatically redirected to the login page, where they can attempt to log in once they have verified
+// their email.
 
 function CreateAccount({ setAuthenticationStatus }) {
       const history = useHistory();

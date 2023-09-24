@@ -1,28 +1,54 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './dashboard.css';
 import { Link, useHistory } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 import { auth } from '../config/firebase';
+import { db } from '../config/firebase';
+import { getDocs, addDoc, collection } from 'firebase/firestore'
+
+// The Dashboard component serves as the application's homepage, acting as a central hub for coaches and players to analyze
+// aggregated responses and personal data derived from their survey responses, presented in the form of graphs and metrics.
+
+// Upon loading, the useEffect hook is employed to retrieve all data entries from the survey collection in Firestore.
+
+// The layout is designed by dynamically splitting the content into two sections using flexbox, followed by the use of CSS grid
+// to structure each individual data visualization. 
+
 
 const Dashboard = ({setAuthenticationStatus}) => {
   const history = useHistory();
+  const [surveyList, setSurveyList] = useState([]);
+  const surveyCollectionRef = collection(db, "survey");
 
-
+  // Reading data from the database
   useEffect(() => {
-    console.log(auth?.currentUser)
-  })
+    const getSurveyList = async () => {
+      try {
+        const data = await getDocs(surveyCollectionRef);
+        const filteredData = data.docs.map((doc) => ({...doc.data(), id: doc.id}))
+        setSurveyList(filteredData)
+        console.log(filteredData)
+      } catch(err) {
+        console.log(err);
+      }
+    };
 
+    getSurveyList();
+  }, [])
+
+
+  // Function that logs a user out and sends them to the login screen
   const logout = async () => {
     try {
       await signOut(auth);
-      setAuthenticationStatus(false)
+      setAuthenticationStatus(false);
     } catch (err) {
       console.error('Error during logout:', err);
     }
   };
 
   const survey = async () => {
-    history.push("/survey")
+    history.push("/survey");
   }
   
 

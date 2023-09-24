@@ -3,8 +3,10 @@ import { useHistory } from 'react-router-dom';
 import { auth } from "../config/firebase"
 import { signOut, signInWithEmailAndPassword } from 'firebase/auth'
 import { handleError } from './ErrorHandler';
-
 import './login.css';
+
+// Utlizes firebases' authentication processes such that the user cannot get into the dashboard without
+// having an account, or having their email verified. 
 
 function LoginPage({ setAuthenticationStatus }) {
       const history = useHistory();
