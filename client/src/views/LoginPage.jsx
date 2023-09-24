@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { auth } from "../config/firebase"
 import { signOut, signInWithEmailAndPassword } from 'firebase/auth'
+import { handleError } from './ErrorHandler';
 
 import './login.css';
 
@@ -33,7 +34,7 @@ function LoginPage({ setAuthenticationStatus }) {
             setError(true);
           }
         } catch(err) {
-          console.log(err)          
+          handleError(setError, setMessage, err);      
         }
       };
 
