@@ -23,7 +23,6 @@ const Dashboard = ({setAuthenticationStatus}) => {
   const usersCollectionRef = collection(db, "users");
   const [selectedUser, setSelectedUser] = useState("All Players");
   const [dashboardData, setDashboardData] = useState([])
-  const [sleepData, setSleepData] = useState({})
 
   // Reading data from the database on load
   useEffect(() => {
@@ -68,10 +67,37 @@ const Dashboard = ({setAuthenticationStatus}) => {
   }, [selectedUser]);
 
 
+  // When the user selects a new player or all players it will go through the process
+  // Of aggregating all the data into their numericData bins. 
+  // It is essentially doing the same thing as 
+  // SELECT SUM(numericDataBin) FROM db WHERE player = "user selection";
   useEffect(() => {
-    // Whenever the user selects a new dashboard option we need to update the data that will go into the graphs
-    // Paul, you already set up your fake data and now need to aggregate each subsection and draw analyses from them
-  }, [dashboardData])
+    var numericData = {
+      dietaryChoices: {},
+      mentalHealth: {},
+      performanceRating: {},
+      physicalHealth: {},
+      sleepHours: {},
+      stressLevel: {},
+    };
+  
+    dashboardData.forEach((val) => {
+      var curr_date = val.date;
+  
+      const numericColumns = ['dietaryChoices', 'mentalHealth', 'performanceRating', 'physicalHealth', 'sleepHours', 'stressLevel'];
+  
+      numericColumns.forEach((column) => {
+        if (numericData[column][curr_date] === undefined) {
+          numericData[column][curr_date] = val[column];
+        } else {
+          numericData[column][curr_date] += val[column];
+        }
+      });
+    });
+  
+    console.log(numericData);
+  }, [dashboardData]);
+  
 
 
   // Function that logs a user out and sends them to the login screen
