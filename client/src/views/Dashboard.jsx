@@ -81,6 +81,9 @@ const Dashboard = ({setAuthenticationStatus}) => {
       stressLevel: {},
     };
   
+    // NEXT STEP:
+    // Rather than aggregating everything by the sum of the information. Look through the data and figure out which numeric
+    // Columns are the ones that you want to show summed data based on dates. Which you want averaged over all data, and so forwarth. 
     dashboardData.forEach((val) => {
       var curr_date = val.date;
   
