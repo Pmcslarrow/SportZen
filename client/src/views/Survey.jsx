@@ -110,9 +110,19 @@ function Survey({ setAuthenticationStatus }) {
   
 
   const addSurveyData = async () => {
-    const currentDate = Timestamp.now();
+    const currentDate = new Date();
+    const atIndex = auth?.currentUser?.email?.indexOf('@');
+    const userName = atIndex !== -1 ? auth?.currentUser?.email?.slice(0, atIndex) : ''; 
+
+    // Extract year, month, and day components
+    const year = currentDate.getFullYear(); // Get the year (YYYY)
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Get the month (MM)
+    const day = String(currentDate.getDate()).padStart(2, '0'); // Get the day (DD)
+
+    const formattedDate = `${year}-${month}-${day}`;
   
     await addDoc(surveyCollectionRef, {
+      name: userName,
       email: auth?.currentUser?.email,
       sleepHours,
       sleepQuality,
@@ -124,7 +134,7 @@ function Survey({ setAuthenticationStatus }) {
       stressSources,
       performanceRating,
       otherInformation,
-      date: currentDate
+      date: formattedDate
     });
   };
 
@@ -166,7 +176,9 @@ function Survey({ setAuthenticationStatus }) {
   }
 
 /*
-CREATED FAKE DATA FOR THE ANALYTICS PORTION
+// CREATED FAKE DATA FOR THE ANALYTICS PORTION
+const users = ['pdmcslarrow', 'dgreen', 'mdoroodchi', 'jjohnson']; 
+
 
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -176,13 +188,27 @@ function getRandomElement(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
+function getRandomUser() {
+  return getRandomElement(users);
+}
+
 // Function to insert fake survey data
 async function insertFakeData() {
   const numRecords = 200; // Number of fake records you want to generate
+  const september = 8; // JavaScript months are 0-based, so September is 8
 
   for (let i = 0; i < numRecords; i++) {
+    let user = getRandomUser();
+
+    // Generate a random day within September
+    const day = getRandomInt(1, 30); // Assume 30 days in September
+
+    // Create a formatted date string in "YYYY-MM-DD" format for September
+    const formattedDate = `2023-${(september + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+
     const fakeData = {
-      email: `user${i}@willamette.edu`,
+      name: `${user}`,
+      email: `${user}@willamette.edu`,
       sleepQuality: getRandomElement(['Excellent', 'Good', 'Fair', 'Poor']),
       sleepHours: getRandomInt(0, 10),
       dietaryChoices: getRandomInt(0, 10),
@@ -192,7 +218,7 @@ async function insertFakeData() {
       stressLevel: getRandomInt(0, 10),
       stressSources: getRandomElement(['Work', 'Personal', 'Team-related']),
       waterConsumption: getRandomElement(['Yes', 'No', 'Unsure']),
-      date: Timestamp.now(),
+      date: formattedDate
     };
 
     await addDoc(surveyCollectionRef, fakeData);
@@ -200,7 +226,6 @@ async function insertFakeData() {
   }
 }
 */
-  
   
   const LinkStyle = {
       fontFamily: 'inherit',

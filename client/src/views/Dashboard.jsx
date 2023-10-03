@@ -18,23 +18,60 @@ import { getDocs, addDoc, collection } from 'firebase/firestore'
 const Dashboard = ({setAuthenticationStatus}) => {
   const history = useHistory();
   const [surveyList, setSurveyList] = useState([]);
+  const [users, setUsers] = useState([]);
   const surveyCollectionRef = collection(db, "survey");
+  const usersCollectionRef = collection(db, "users");
+  const [selectedUser, setSelectedUser] = useState("All Players");
+  const [dashboardData, setDashboardData] = useState([])
+  const [sleepData, setSleepData] = useState({})
 
-  // Reading data from the database
+  // Reading data from the database on load
   useEffect(() => {
     const getSurveyList = async () => {
       try {
         const data = await getDocs(surveyCollectionRef);
         const filteredData = data.docs.map((doc) => ({...doc.data(), id: doc.id}))
         setSurveyList(filteredData)
-        console.log(filteredData)
+        setDashboardData(filteredData)
       } catch(err) {
         console.log(err);
       }
     };
 
+    const getUsers = async () => {
+      try {
+        const data = await getDocs(usersCollectionRef);
+        const filteredData = data.docs.map((doc) => ({...doc.data(), id: doc.id}))
+        const names = filteredData.map((obj) => obj.name);
+        setUsers(names)
+      } catch(err) {
+        console.log(err);
+      }
+    }
     getSurveyList();
+    getUsers();
   }, [])
+
+  // Handle the user's selection of a player for the dashboard
+  useEffect(() => {
+    if (selectedUser === "All Players") {
+      setDashboardData(surveyList);
+    } else {
+      const filteredData = [];
+      surveyList.forEach((val) => {
+        if (selectedUser === val.name) {
+          filteredData.push(val);
+        }
+      });      
+      setDashboardData(filteredData);
+    }
+  }, [selectedUser]);
+
+
+  useEffect(() => {
+    // Whenever the user selects a new dashboard option we need to update the data that will go into the graphs
+    // Paul, you already set up your fake data and now need to aggregate each subsection and draw analyses from them
+  }, [dashboardData])
 
 
   // Function that logs a user out and sends them to the login screen
@@ -51,6 +88,9 @@ const Dashboard = ({setAuthenticationStatus}) => {
     history.push("/survey");
   }
   
+  const handleUserChange = (event) => {
+    setSelectedUser(event.target.value);
+  };
 
   return (
     <div className="dashboard-container">
@@ -61,6 +101,16 @@ const Dashboard = ({setAuthenticationStatus}) => {
           </div>
           <div className="nav-item" onClick={survey}>
               <h3>Survey</h3>
+          </div>
+          <div>
+            <select value={selectedUser} onChange={handleUserChange}>
+              <option value="All Players">All Players</option>
+              {users.map((user, index) => (
+                <option key={index} value={user}>
+                  {user}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
         <div className="nav-group">

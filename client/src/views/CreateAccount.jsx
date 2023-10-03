@@ -3,6 +3,8 @@ import { useHistory } from 'react-router-dom';
 import { auth } from "../config/firebase"
 import { createUserWithEmailAndPassword, signOut, sendEmailVerification } from 'firebase/auth'
 import { handleError } from './ErrorHandler';
+import { db } from '../config/firebase';
+import { addDoc, collection, Timestamp } from 'firebase/firestore'
 import './login.css';
 
 // This component utilizes Firebase auth to create a new user, ensuring that the email domain is restricted to "willamette.edu".
@@ -17,6 +19,8 @@ function CreateAccount({ setAuthenticationStatus }) {
       const [password, setPassword] = useState('');
       const [errorStatus, setError] = useState(false)
       const [errorMessage, setMessage] = useState('')
+      const userCollectionRef = collection(db, "users");
+
 
       useEffect(() => {
             logout()
@@ -32,6 +36,9 @@ function CreateAccount({ setAuthenticationStatus }) {
           } else {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             
+            // Adds email, name and timestamp to user table
+            addUserData();
+
             // Send email verification
             await sendEmailVerification(userCredential.user);
             setMessage("Please verify your email.")
@@ -39,12 +46,24 @@ function CreateAccount({ setAuthenticationStatus }) {
 
             // Redirect to login page after 5 seconds
             setTimeout(() => {
-              history.push("/"); // Change "/login" to your actual login page route
+              history.push("/");
             }, 5000);
           }
         } catch(err) {
           handleError(setError, setMessage, err);
         }
+      };
+
+      const addUserData= async () => {
+        const currentDate = Timestamp.now();
+        const atIndex = auth?.currentUser?.email?.indexOf('@');
+        const userName = atIndex !== -1 ? auth?.currentUser?.email?.slice(0, atIndex) : ''; 
+      
+        await addDoc(userCollectionRef, {
+          name: userName,
+          email: auth?.currentUser?.email,
+          date: currentDate
+        });
       };
 
 

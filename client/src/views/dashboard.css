@@ -95,4 +95,6 @@
       display: none;
 }
 
-
+select {
+      margin: 6px;
+}
