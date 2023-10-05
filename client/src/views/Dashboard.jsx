@@ -23,6 +23,10 @@ const Dashboard = ({setAuthenticationStatus}) => {
   const usersCollectionRef = collection(db, "users");
   const [selectedUser, setSelectedUser] = useState("All Players");
   const [dashboardData, setDashboardData] = useState([])
+  const [avgMentalHealth, setAvgMentalHealth] = useState(0)
+  const [avgPhysicalHealth, setAvgPhysicalHealth] = useState(0)
+  const [summedData, setSummedData] = useState({})
+
 
   // Reading data from the database on load
   useEffect(() => {
@@ -67,12 +71,10 @@ const Dashboard = ({setAuthenticationStatus}) => {
   }, [selectedUser]);
 
 
-  // When the user selects a new player or all players it will go through the process
-  // Of aggregating all the data into their numericData bins. 
-  // It is essentially doing the same thing as 
-  // SELECT SUM(numericDataBin) FROM db WHERE player = "user selection";
+  // When the user selects a new player (or all players)
+  // This will update all the summed data and averaged data that will be displayed on the dashboard
   useEffect(() => {
-    var numericData = {
+    var summedData = {
       dietaryChoices: {},
       mentalHealth: {},
       performanceRating: {},
@@ -80,28 +82,51 @@ const Dashboard = ({setAuthenticationStatus}) => {
       sleepHours: {},
       stressLevel: {},
     };
-  
-    // NEXT STEP:
-    // Rather than aggregating everything by the sum of the information. Look through the data and figure out which numeric
-    // Columns are the ones that you want to show summed data based on dates. Which you want averaged over all data, and so forwarth. 
+
+    var averagedData = {
+      dietaryChoices: [],
+      mentalHealth: [],
+      performanceRating: [],
+      physicalHealth: [],
+      sleepHours: [],
+      stressLevel: [],
+    };
+
+    const columns = ['dietaryChoices', 'performanceRating', 'sleepHours', 'stressLevel', 'mentalHealth', 'physicalHealth'];
+
     dashboardData.forEach((val) => {
       var curr_date = val.date;
-  
-      const numericColumns = ['dietaryChoices', 'mentalHealth', 'performanceRating', 'physicalHealth', 'sleepHours', 'stressLevel'];
-  
-      numericColumns.forEach((column) => {
-        if (numericData[column][curr_date] === undefined) {
-          numericData[column][curr_date] = val[column];
+
+      // Summing all values by date
+      columns.forEach((column) => {
+        if (summedData[column][curr_date] === undefined) {
+          summedData[column][curr_date] = val[column];
         } else {
-          numericData[column][curr_date] += val[column];
+          summedData[column][curr_date] += val[column];
         }
       });
+
+      // Averaging all values
+      columns.forEach((column) => {
+          averagedData[column].push(val[column]);
+      });
     });
-  
-    console.log(numericData);
+
+    getAverage(averagedData.mentalHealth, setAvgMentalHealth)
+    getAverage(averagedData.physicalHealth, setAvgPhysicalHealth)
+    setSummedData(summedData)
   }, [dashboardData]);
   
 
+  const getAverage = (arr, setState) => {
+    var sum = 0
+    var length = arr.length
+    arr.forEach((val) => {
+      sum += val
+    })
+    var avg = (sum / length).toFixed(2)
+    setState(avg)
+  }
 
   // Function that logs a user out and sends them to the login screen
   const logout = async () => {
@@ -155,8 +180,8 @@ const Dashboard = ({setAuthenticationStatus}) => {
       <div className="main-content">
         <div className="grid-container">
           <div className="grid-item item1">Item 1</div>
-          <div className="grid-item item2">Item 2</div>
-          <div className="grid-item item3">Item 3</div>
+          <div className="grid-item item2">Average Mental: {avgMentalHealth}</div>
+          <div className="grid-item item3">Average Physical: {avgPhysicalHealth}</div>
           <div className="grid-item item4">Item 4</div>
           <div className="grid-item item9">Item 9</div>
           <div className="grid-item item10">Item 10</div>
