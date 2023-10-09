@@ -116,6 +116,10 @@ const Dashboard = ({setAuthenticationStatus}) => {
     getAverage(averagedData.physicalHealth, setAvgPhysicalHealth)
     setSummedData(summedData)
   }, [dashboardData]);
+
+  useEffect(() => {
+    console.log(surveyList)
+  }, [surveyList])
   
 
   const getAverage = (arr, setState) => {

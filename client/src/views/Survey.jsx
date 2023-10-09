@@ -4,7 +4,7 @@ import { useHistory, Link } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 import { auth } from '../config/firebase';
 import { db } from '../config/firebase';
-import { addDoc, collection, Timestamp } from 'firebase/firestore'
+import { addDoc, getDocs, collection, Timestamp } from 'firebase/firestore'
 import './survey.css';
 
 
@@ -28,10 +28,10 @@ import './survey.css';
 function Survey({ setAuthenticationStatus }) {
   const history = useHistory();
   const MIN_PAGE = 0;
-  const MAX_PAGE = 9; // Update the MAX_PAGE to the total number of pages.
+  const MAX_PAGE = 9; 
   const [pageNumber, setPageNumber] = useState(0);
-  const [sleepHours, setSleepHours] = useState(0); // Default state for SingleNumberSelection
-  const [sleepQuality, setSleepQuality] = useState(null); // Default state for CategoricalInput
+  const [sleepHours, setSleepHours] = useState(0); 
+  const [sleepQuality, setSleepQuality] = useState(null); 
   const [dietaryChoices, setDietaryChoices] = useState(0);
   const [waterConsumption, setWaterConsumption] = useState(null);
   const [mentalHealth, setMentalHealth] = useState(0);
@@ -40,7 +40,35 @@ function Survey({ setAuthenticationStatus }) {
   const [stressSources, setStressSources] = useState(null);
   const [performanceRating, setPerformanceRating] = useState(0);
   const [otherInformation, setOtherInformation] = useState("");
+  const [userHasSubmitToday, setUserHasSubmitToday] = useState(false)
   const surveyCollectionRef = collection(db, "survey");
+
+
+
+  // Pulls all survey data from the DB based on the signed in user. If the user has already submit something on todaysDate
+  // It set then sets the state of userHasSubmitToday to true meaning I won't allow the user access the survey
+  useEffect(() => {
+    const checkIfUserHasAlreadySubmitToday = async () => {
+      try {
+        const year = new Date().getFullYear();
+        const month = String(new Date().getMonth() + 1).padStart(2, '0'); 
+        const day = String(new Date().getDate()).padStart(2, '0'); 
+        const todaysDate = `${year}-${month}-${day}`;
+
+        const data = await getDocs(surveyCollectionRef);
+        const filteredData = data.docs.map((doc) => ({...doc.data(), id: doc.id}))
+        
+        filteredData.forEach((val) => {
+          if (auth?.currentUser?.email === val.email && todaysDate === val.date) {
+            setUserHasSubmitToday(true)
+          }
+        });     
+      } catch(err) {
+        console.log(err);
+      }
+    };
+    checkIfUserHasAlreadySubmitToday()
+  }, [])
 
 
   const pages = [
@@ -265,25 +293,34 @@ async function insertFakeData() {
       </div>
 
       { /* BOILERPLATE NAV BAR END */ }
+      { /* Checking if the user has already submit something today -- If true it will not let them use the survey again */ }
 
-      <div className="main-content">
-          <p>{pageNumber + 1}/10</p>
-          {pages[pageNumber]}
-          <div className='flex-row'>
-            {pageNumber !== MAX_PAGE ? (
-              <>
-                <div onClick={(e) => handlePrev(e, pageNumber)}>Prev</div>
-                <div onClick={(e) => handleNext(e, pageNumber)}>Next</div>
-              </>
-            ) : (
-              <>
-                <div onClick={(e) => handlePrev(e, pageNumber)}>Prev</div>
-                <Link to="/" style={LinkStyle}>
-                  <div onClick={handleSubmit}>Submit</div>
-                </Link>
-              </>
-            )}
-          </div>
+      <div className='main-content'>
+        {userHasSubmitToday === true ? (
+          <>
+            <h3>You can only submit 1 survey per day</h3>
+          </>
+        ) : (
+          <>
+            <p>{pageNumber + 1}/10</p>
+            {pages[pageNumber]}
+            <div className='flex-row'>
+              {pageNumber !== MAX_PAGE ? (
+                <>
+                  <div onClick={(e) => handlePrev(e, pageNumber)}>Prev</div>
+                  <div onClick={(e) => handleNext(e, pageNumber)}>Next</div>
+                </>
+              ) : (
+                <>
+                  <div onClick={(e) => handlePrev(e, pageNumber)}>Prev</div>
+                  <Link to="/" style={LinkStyle}>
+                    <div onClick={handleSubmit}>Submit</div>
+                  </Link>
+                </>
+              )}
+            </div>
+          </>
+        )}
       </div>
   </div>
   );
