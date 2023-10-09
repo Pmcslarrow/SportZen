@@ -4,7 +4,7 @@ SportZen is a React and Firebase application designed to enhance communication b
 
 ## Key Features
 
-- **Daily Surveys**: Players can easily submit daily surveys to track their well-being and performance. This data forms the foundation for deeper insights and improvements.
+- **Daily Surveys**: Players can easily submit daily surveys to track their well-being and performance. This data forms the foundation for deeper insights and improvements. The survey has been set up in a way to limit users to one survey per day so that data isn't scewed incorrectly.
 
 - **Analytics Dashboard**: SportZen provides coaches and players with an intuitive analytics dashboard. Here, you can explore data-driven insights into team performance, identifying what's working well and areas that require attention.
 
