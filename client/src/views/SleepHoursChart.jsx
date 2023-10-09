@@ -10,8 +10,10 @@ const SleepHoursChart = ({ sleepData }) => {
     }
 
     const margin = { top: 20, right: 20, bottom: 50, left: 40 };
-    const width = 400 - margin.left - margin.right; // Adjust the width as needed
-    const height = 275 - margin.top // Adjust the height as needed
+    const aspectRatio = 4 / 3; // Desired aspect ratio
+    const containerWidth = chartRef.current.clientWidth;
+    const width = containerWidth - margin.left - margin.right;
+    const height = width / aspectRatio - margin.top// Calculate height based on aspect ratio
 
     // Clear any existing content within the chartRef
     d3.select(chartRef.current).selectAll('*').remove();
@@ -19,8 +21,8 @@ const SleepHoursChart = ({ sleepData }) => {
     const svg = d3
       .select(chartRef.current)
       .append('svg')
-      .attr('width', width + margin.left + margin.right)
-      .attr('height', height + margin.top + margin.bottom)
+      .attr('width', containerWidth)
+      .attr('height', containerWidth / aspectRatio) // Set height based on aspect ratio
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
@@ -73,7 +75,7 @@ const SleepHoursChart = ({ sleepData }) => {
   }, [sleepData]);
 
   return (
-    <div style={{ width: '100%', height: '100%' }} ref={chartRef}></div>
+    <div style={{ width: '100%', paddingBottom: '75%' }} ref={chartRef}></div>
   );
 };
 
