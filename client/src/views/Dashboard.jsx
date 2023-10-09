@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import SleepHoursChart from './SleepHoursChart';
 import './dashboard.css';
 import { Link, useHistory } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
@@ -26,6 +27,7 @@ const Dashboard = ({setAuthenticationStatus}) => {
   const [avgMentalHealth, setAvgMentalHealth] = useState(0)
   const [avgPhysicalHealth, setAvgPhysicalHealth] = useState(0)
   const [summedData, setSummedData] = useState({})
+  const [visualSleepHours, setVisualSleepHours] = useState({})
 
 
   // Reading data from the database on load
@@ -117,9 +119,34 @@ const Dashboard = ({setAuthenticationStatus}) => {
     setSummedData(summedData)
   }, [dashboardData]);
 
+  // Filtering sleepHours to only include the last 30 days of data
   useEffect(() => {
-    console.log(surveyList)
-  }, [surveyList])
+    try {
+      const sleepData = summedData.sleepHours;
+      const currentDate = new Date();
+  
+      // Calculate the date 30 days ago from today
+      const thirtyDaysAgo = new Date(currentDate);
+      thirtyDaysAgo.setDate(currentDate.getDate() - 30);
+  
+      // Convert to YYYY-MM-DD
+      const thirtyDaysAgoString = thirtyDaysAgo.toISOString().split('T')[0];
+  
+      // Filter sleepData to only include the last 30 days
+      const filteredData = Object.entries(sleepData)
+        .filter(([date]) => date >= thirtyDaysAgoString)
+        .reduce((obj, [date, value]) => {
+          obj[date] = value;
+          return obj;
+        }, {});
+
+      setVisualSleepHours(filteredData)
+
+    } catch(err) {
+      console.log("sleepHours filtering error (30 days)")
+    }
+    
+  }, [summedData]);
   
 
   const getAverage = (arr, setState) => {
@@ -183,7 +210,9 @@ const Dashboard = ({setAuthenticationStatus}) => {
 
       <div className="main-content">
         <div className="grid-container">
-          <div className="grid-item item1">Item 1</div>
+        <div className="grid-item item1">
+          <SleepHoursChart sleepData={visualSleepHours} />
+        </div>
           <div className="grid-item item2">Average Mental: {avgMentalHealth}</div>
           <div className="grid-item item3">Average Physical: {avgPhysicalHealth}</div>
           <div className="grid-item item4">Item 4</div>

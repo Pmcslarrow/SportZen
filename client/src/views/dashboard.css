@@ -63,6 +63,11 @@
       height: 92%;
 }
 
+.chart-container {
+      width: 100%; /* Adjust width as needed */
+      height: 100%; /* Adjust height as needed */
+}
+
 .grid-item {
       background-color: var(--grid-item-color);
       color: black;
@@ -92,7 +97,6 @@
 }
 
 .item10, .item11, .item12 {
-      display: none;
 }
 
 select {
