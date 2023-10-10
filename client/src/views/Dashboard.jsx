@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import SleepHoursChart from './SleepHoursChart';
+import Teammates from './Teammates';
 import './dashboard.css';
 import { Link, useHistory } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
@@ -117,6 +118,8 @@ const Dashboard = ({setAuthenticationStatus}) => {
     getAverage(averagedData.mentalHealth, setAvgMentalHealth)
     getAverage(averagedData.physicalHealth, setAvgPhysicalHealth)
     setSummedData(summedData)
+
+    console.log(averagedData)
   }, [dashboardData]);
 
   // Filtering sleepHours to only include the last 30 days of data
@@ -148,6 +151,7 @@ const Dashboard = ({setAuthenticationStatus}) => {
     
   }, [summedData]);
   
+  
 
   const getAverage = (arr, setState) => {
     var sum = 0
@@ -158,6 +162,11 @@ const Dashboard = ({setAuthenticationStatus}) => {
     var avg = (sum / length).toFixed(2)
     setState(avg)
   }
+
+  console.log(surveyList)
+
+  
+
 
   // Function that logs a user out and sends them to the login screen
   const logout = async () => {
@@ -213,10 +222,12 @@ const Dashboard = ({setAuthenticationStatus}) => {
         <div className="grid-item item1">
           <SleepHoursChart sleepData={visualSleepHours} />
         </div>
-          <div className="grid-item item2">Average Mental: {avgMentalHealth}</div>
-          <div className="grid-item item3">Average Physical: {avgPhysicalHealth}</div>
+          <div className="grid-item item2">{selectedUser} Avg Mental: {avgMentalHealth}</div>
+          <div className="grid-item item3">{selectedUser} Avg Physical: {avgPhysicalHealth}</div>
           <div className="grid-item item4">Item 4</div>
-          <div className="grid-item item9">Item 9</div>
+          <div className="grid-item item9">
+            <Teammates surveyList={surveyList} currentUserEmail={auth?.currentUser?.email}/>
+          </div>
           <div className="grid-item item10">Item 10</div>
           <div className="grid-item item11">Item 11</div>
           <div className="grid-item item12">Item 12</div>

@@ -19,9 +19,6 @@ function LoginPage({ setAuthenticationStatus }) {
         logout()
         setAuthenticationStatus(false)
       }, [])
-
-      //console.log(auth?.currentUser?.email)
-      console.log(auth?.currentUser)
     
       const handleSubmit = async (e) => {
         e.preventDefault()
