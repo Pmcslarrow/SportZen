@@ -205,7 +205,7 @@ function Survey({ setAuthenticationStatus }) {
 
 /*
 // CREATED FAKE DATA FOR THE ANALYTICS PORTION
-const users = ['pdmcslarrow', 'dgreen', 'mdoroodchi', 'jjohnson']; 
+const users = ['pdmcslarrow', 'dgreen', 'mdoroodchi', 'jjohnson', 'jboydell', 'tsherman']; 
 
 
 function getRandomInt(min, max) {
@@ -254,6 +254,11 @@ async function insertFakeData() {
   }
 }
 */
+
+
+
+
+
   
   const LinkStyle = {
       fontFamily: 'inherit',

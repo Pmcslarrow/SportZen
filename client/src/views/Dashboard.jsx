@@ -29,9 +29,10 @@ const Dashboard = ({setAuthenticationStatus}) => {
   const [avgPhysicalHealth, setAvgPhysicalHealth] = useState(0)
   const [summedData, setSummedData] = useState({})
   const [visualSleepHours, setVisualSleepHours] = useState({})
+  const [refreshKey, setRefreshKey] = useState(0);
 
 
-  // Reading data from the database on load
+  // Reading survey data and user data from the database
   useEffect(() => {
     const getSurveyList = async () => {
       try {
@@ -58,7 +59,7 @@ const Dashboard = ({setAuthenticationStatus}) => {
     getUsers();
   }, [])
 
-  // Handle the user's selection of a player for the dashboard
+  // Handle the dropdown menu of a player selection
   useEffect(() => {
     if (selectedUser === "All Players") {
       setDashboardData(surveyList);
@@ -150,6 +151,10 @@ const Dashboard = ({setAuthenticationStatus}) => {
     }
     
   }, [summedData]);
+
+  const handleRefresh = () => {
+    setRefreshKey((prevKey) => prevKey + 1);
+  }
   
   
 
@@ -162,11 +167,6 @@ const Dashboard = ({setAuthenticationStatus}) => {
     var avg = (sum / length).toFixed(2)
     setState(avg)
   }
-
-  console.log(surveyList)
-
-  
-
 
   // Function that logs a user out and sends them to the login screen
   const logout = async () => {
@@ -206,6 +206,10 @@ const Dashboard = ({setAuthenticationStatus}) => {
               ))}
             </select>
           </div>
+          <button
+            onClick={handleRefresh}>
+            Refresh Data
+          </button>
         </div>
         <div className="nav-group">
           <div className="nav-item">
@@ -220,13 +224,13 @@ const Dashboard = ({setAuthenticationStatus}) => {
       <div className="main-content">
         <div className="grid-container">
         <div className="grid-item item1">
-          <SleepHoursChart sleepData={visualSleepHours} />
+          <SleepHoursChart sleepData={visualSleepHours} key={refreshKey}/>
         </div>
           <div className="grid-item item2">{selectedUser} Avg Mental: {avgMentalHealth}</div>
           <div className="grid-item item3">{selectedUser} Avg Physical: {avgPhysicalHealth}</div>
           <div className="grid-item item4">Item 4</div>
           <div className="grid-item item9">
-            <Teammates surveyList={surveyList} currentUserEmail={auth?.currentUser?.email}/>
+            <Teammates surveyList={surveyList} currentUserEmail={auth?.currentUser?.email} key={refreshKey}/>
           </div>
           <div className="grid-item item10">Item 10</div>
           <div className="grid-item item11">Item 11</div>

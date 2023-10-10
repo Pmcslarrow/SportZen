@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 
-const SleepHoursChart = ({ sleepData }) => {
+const SleepHoursChart = ({ sleepData, key }) => {
   const chartRef = useRef();
 
   useEffect(() => {
