@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import SleepHoursChart from './SleepHoursChart';
-import Teammates from './Teammates';
+import Teammates from './teammates';
 import './dashboard.css';
 import { Link, useHistory } from 'react-router-dom';
 import { signOut } from 'firebase/auth';

@@ -1,0 +1,42 @@
+:root {
+      --background-blue: #004E98;
+      --orange: #FF6700;
+      --font-family: "Avenir", sans-serif;
+}
+
+/* Alternate row background colors and light font weight for the table */
+table {
+width: 100%;
+border-collapse: collapse;
+min-width: 100%;
+}
+
+thead {
+font-weight: lighter; /* Light font weight for header cells */
+text-align: left; /* Align header text to the left */
+background-color: #f2f2f2;
+}
+
+th {
+padding: 10px 20px; /* Add padding to the header cells (adjust as needed) */
+}
+
+tbody {
+font-weight: lighter; /* Light font weight for body cells */
+}
+
+tr:nth-child(even) {
+background-color: #f2f2f2; /* Light gray background for even rows */
+}
+
+td {
+text-align: left; /* Align cell text to the left */
+padding: 10px; /* Add padding to the cells */
+}
+
+.table-container {
+overflow-x: auto; /* Enable horizontal scrolling when needed */
+overflow-y: auto;
+max-width: 100%; /* Ensure it doesn't exceed the container's width */
+height: auto;
+}

@@ -81,6 +81,7 @@
 
 .item9 {
       grid-column: span 3; /* Spanning three columns */
+      align-items: start;
 }
 
 .item4 {
@@ -97,6 +98,7 @@
 }
 
 .item10, .item11, .item12 {
+      display: none;
 }
 
 select {

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import './teammates.css'
 
 const Teammates = ({ surveyList, currentUserEmail }) => {
   const [aggregatedData, setAggregatedData] = useState([]);
@@ -54,7 +55,7 @@ const Teammates = ({ surveyList, currentUserEmail }) => {
   }, [surveyList, currentUserEmail]);
 
   return (
-    <div>
+    <div className='table-container'>
       <table>
         <thead>
           <tr>
