@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import SleepHoursChart from './SleepHoursChart';
 import Teammates from './teammates';
+import ProgressBar from './ProgressBar';
 import './dashboard.css';
 import { Link, useHistory } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
@@ -226,8 +227,12 @@ const Dashboard = ({setAuthenticationStatus}) => {
         <div className="grid-item item1">
           <SleepHoursChart sleepData={visualSleepHours} key={refreshKey}/>
         </div>
-          <div className="grid-item item2">{selectedUser} Avg Mental: {avgMentalHealth}</div>
-          <div className="grid-item item3">{selectedUser} Avg Physical: {avgPhysicalHealth}</div>
+          <div className="grid-item item2">
+            <ProgressBar title={"Avg Mental"} value={avgMentalHealth} /> 
+          </div>
+          <div className="grid-item item3">
+            <ProgressBar title={"Avg Physical"} value={avgPhysicalHealth} /> 
+          </div>
           <div className="grid-item item4">Item 4</div>
           <div className="grid-item item9">
             <Teammates surveyList={surveyList} currentUserEmail={auth?.currentUser?.email} key={refreshKey}/>

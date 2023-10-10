@@ -1,0 +1,23 @@
+:root {
+  --background-blue: #004E98;
+  --orange: #FF6700;
+  --font-family: "Avenir", sans-serif;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 20px;
+  background-color: #ccc;
+  border-radius: 4px;
+  margin: 10px 0;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: var(--background-blue); /* Green color for the filled portion */
+}
+
+.div-container {
+  width: 90%;
+}
