@@ -121,8 +121,6 @@ const Dashboard = ({setAuthenticationStatus}) => {
     getAverage(averagedData.mentalHealth, setAvgMentalHealth)
     getAverage(averagedData.physicalHealth, setAvgPhysicalHealth)
     setSummedData(summedData)
-
-    console.log(averagedData)
   }, [dashboardData]);
 
   // Filtering sleepHours to only include the last 30 days of data
@@ -158,11 +156,8 @@ const Dashboard = ({setAuthenticationStatus}) => {
 
       setVisualSleepHours(filteredData)
       setVisualPerformanceHours(filteredPerformanceData)
-
-      console.log(performanceData)
-
     } catch(err) {
-      console.log("sleepHours filtering error (30 days)")
+      console.log(err)
     }
     
   }, [summedData]);
