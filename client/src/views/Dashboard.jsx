@@ -30,6 +30,7 @@ const Dashboard = ({setAuthenticationStatus}) => {
   const [avgPhysicalHealth, setAvgPhysicalHealth] = useState(0)
   const [summedData, setSummedData] = useState({})
   const [visualSleepHours, setVisualSleepHours] = useState({})
+  const [visualPerformanceHours, setVisualPerformanceHours] = useState({})
   const [refreshKey, setRefreshKey] = useState(0);
 
 
@@ -128,7 +129,9 @@ const Dashboard = ({setAuthenticationStatus}) => {
   useEffect(() => {
     try {
       const sleepData = summedData.sleepHours;
+      const performanceData = summedData.performanceRating
       const currentDate = new Date();
+
   
       // Calculate the date 30 days ago from today
       const thirtyDaysAgo = new Date(currentDate);
@@ -145,7 +148,18 @@ const Dashboard = ({setAuthenticationStatus}) => {
           return obj;
         }, {});
 
+      // Filter sleepData to only include the last 30 days
+      const filteredPerformanceData = Object.entries(performanceData)
+        .filter(([date]) => date >= thirtyDaysAgoString)
+        .reduce((obj, [date, value]) => {
+          obj[date] = value;
+          return obj;
+        }, {});
+
       setVisualSleepHours(filteredData)
+      setVisualPerformanceHours(filteredPerformanceData)
+
+      console.log(performanceData)
 
     } catch(err) {
       console.log("sleepHours filtering error (30 days)")
@@ -157,7 +171,8 @@ const Dashboard = ({setAuthenticationStatus}) => {
     setRefreshKey((prevKey) => prevKey + 1);
   }
   
-  
+  // stressLevel, stressSources, sleepQuality, performanceRating
+
 
   const getAverage = (arr, setState) => {
     var sum = 0
@@ -187,6 +202,7 @@ const Dashboard = ({setAuthenticationStatus}) => {
     setSelectedUser(event.target.value);
   };
 
+  
   return (
     <div className="dashboard-container">
       <div className="navigation-bar">
@@ -225,7 +241,7 @@ const Dashboard = ({setAuthenticationStatus}) => {
       <div className="main-content">
         <div className="grid-container">
         <div className="grid-item item1">
-          <SleepHoursChart sleepData={visualSleepHours} key={refreshKey}/>
+          <SleepHoursChart sleepData={visualSleepHours} performanceData={visualPerformanceHours} key={refreshKey}/>
         </div>
           <div className="grid-item item2">
             <ProgressBar title={"Avg Mental"} value={avgMentalHealth} /> 
@@ -233,17 +249,14 @@ const Dashboard = ({setAuthenticationStatus}) => {
           <div className="grid-item item3">
             <ProgressBar title={"Avg Physical"} value={avgPhysicalHealth} /> 
           </div>
-          <div className="grid-item item4">Item 4</div>
           <div className="grid-item item9">
             <Teammates surveyList={surveyList} currentUserEmail={auth?.currentUser?.email} key={refreshKey}/>
           </div>
-          <div className="grid-item item10">Item 10</div>
-          <div className="grid-item item11">Item 11</div>
-          <div className="grid-item item12">Item 12</div>
         </div>
       </div>
     </div>
   );
+  
 };
 
 export default Dashboard;

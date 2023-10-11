@@ -56,12 +56,39 @@
 
 .grid-container {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      grid-template-rows: 40% 60% auto;
+      grid-template-columns: 3fr 1fr; /* First column takes 75%, second column takes 25% */
+      grid-template-rows: repeat(2, 1fr);
       grid-gap: 10px;
       width: 98%;
       height: 92%;
-}
+      grid-template-areas:
+        "item1 item2"
+        "item5 item3";
+    }
+    
+    
+    .item1 {
+      grid-area: item1;
+    }
+    
+    .item2 {
+      grid-area: item2;
+    }
+    
+    .item3 {
+      grid-area: item3;
+    }
+    
+    .item5 {
+      grid-area: item5;
+    }
+    
+
+
+/*
+1 1 1 2
+5 5 5 3
+*/
 
 .chart-container {
       width: 100%; /* Adjust width as needed */
@@ -79,14 +106,18 @@
       border: 2px solid black;
 }
 
-.item9 {
-      grid-column: span 3; /* Spanning three columns */
-      align-items: start;
-}
+/*
 
-.item4 {
-      grid-row: span 2;
+
+.item1 {
+      grid-column: span 3; 
 }
+*/
+
+
+
+
+
 
 .table-container {
 /* Styles for the table container inside item9 */
@@ -125,3 +156,5 @@ button:hover {
       background-color: var(--orange);
       color: white;
 }
+
+
