@@ -288,9 +288,6 @@ async function insertFakeData() {
           </div>
       </div>
           <div className="nav-group">
-          <div className="nav-item">
-              <h3>Profile</h3>
-          </div>
           <div className="nav-item" onClick={logout}>
               <h3>Logout</h3>
           </div>

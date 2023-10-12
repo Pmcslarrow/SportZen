@@ -3,11 +3,11 @@ import SleepHoursChart from './SleepHoursChart';
 import Teammates from './teammates';
 import ProgressBar from './ProgressBar';
 import './dashboard.css';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 import { auth } from '../config/firebase';
 import { db } from '../config/firebase';
-import { getDocs, addDoc, collection } from 'firebase/firestore'
+import { getDocs, collection } from 'firebase/firestore'
 
 // The Dashboard component serves as the application's homepage, acting as a central hub for coaches and players to analyze
 // aggregated responses and personal data derived from their survey responses, presented in the form of graphs and metrics.
@@ -224,9 +224,7 @@ const Dashboard = ({setAuthenticationStatus}) => {
           </button>
         </div>
         <div className="nav-group">
-          <div className="nav-item">
-            <h3>Profile</h3>
-          </div>
+         
           <div className="nav-item" onClick={logout}>
               <h3>Logout</h3>
           </div>
