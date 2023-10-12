@@ -1,7 +1,7 @@
 import React from 'react';
 import './ProgressBar.css'
 
-const ProgressBar = ({ title, value }) => {
+const ProgressBar = ({ title, value, key }) => {
   // Ensure the value is within the range [0, 10]
   const normalizedValue = Math.min(Math.max(value, 0), 10);
 

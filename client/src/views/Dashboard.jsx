@@ -173,7 +173,7 @@ const Dashboard = ({setAuthenticationStatus}) => {
     var sum = 0
     var length = arr.length
     arr.forEach((val) => {
-      sum += val
+      sum += parseInt(val)
     })
     var avg = (sum / length).toFixed(2)
     setState(avg)
@@ -237,10 +237,10 @@ const Dashboard = ({setAuthenticationStatus}) => {
           <SleepHoursChart sleepData={visualSleepHours} performanceData={visualPerformanceHours} key={refreshKey}/>
         </div>
           <div className="grid-item item2">
-            <ProgressBar title={"Avg Mental"} value={avgMentalHealth} /> 
+            <ProgressBar title={"Avg Mental"} value={avgMentalHealth} key={refreshKey}/> 
           </div>
           <div className="grid-item item3">
-            <ProgressBar title={"Avg Physical"} value={avgPhysicalHealth} /> 
+            <ProgressBar title={"Avg Physical"} value={avgPhysicalHealth} key={refreshKey}/> 
           </div>
           <div className="grid-item item9">
             <Teammates surveyList={surveyList} currentUserEmail={auth?.currentUser?.email} key={refreshKey}/>
