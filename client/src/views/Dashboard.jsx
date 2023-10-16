@@ -134,7 +134,13 @@ const Dashboard = ({setAuthenticationStatus}) => {
     // Define a function to calculate the average of an array
     function getAverage(arr) {
       if (arr.length === 0) return 0;
-      return arr.reduce((total, val) => total + val, 0) / arr.length;
+      const numericArray = arr.map(val => parseFloat(val));
+      const validNumericArray = numericArray.filter(val => !isNaN(val));
+    
+      if (validNumericArray.length === 0) return 0;
+    
+      const total = validNumericArray.reduce((acc, val) => acc + val, 0);
+      return (total / validNumericArray.length).toFixed(2);
     }
 
     // Calculate and set the averages
