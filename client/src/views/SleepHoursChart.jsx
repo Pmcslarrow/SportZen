@@ -1,16 +1,36 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useMemo } from 'react';
 import * as d3 from 'd3';
 
-const SleepHoursChart = ({ sleepData, performanceData }) => {
+const SleepHoursChart = ({ sleepData, performanceData, averages, key, selectedPlayer }) => {
   const chartRef = useRef();
 
+// If the selected user is "All Players" average the values out 0-10
+  const calculateAverageSleepHours = () => {
+    if (selectedPlayer === "All Players") {
+      const averageSleepHours = {};
+
+      for (const date in averages.sleepHours) {
+        if (averages.sleepHours[date].count > 0) {
+          averageSleepHours[date] = averages.sleepHours[date].sum / averages.sleepHours[date].count;
+        }
+      }
+
+      return averageSleepHours;
+    } else {
+      return sleepData;
+    }
+  };
+
+  const DATA = useMemo(calculateAverageSleepHours, [selectedPlayer, sleepData, averages]);
+
+
   useEffect(() => {
-    if (!sleepData || !chartRef.current) {
+    if (!DATA || !chartRef.current) {
       return;
     }
 
     // Sort the data by date
-    const sortedSleepData = sortDataByDate(sleepData);
+    const sortedSleepData = sortDataByDate(DATA);
     const sortedPerformanceData = sortDataByDate(performanceData);
 
     // Match and preprocess the data

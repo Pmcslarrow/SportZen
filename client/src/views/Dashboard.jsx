@@ -29,6 +29,8 @@ const Dashboard = ({setAuthenticationStatus}) => {
   const [avgMentalHealth, setAvgMentalHealth] = useState(0)
   const [avgPhysicalHealth, setAvgPhysicalHealth] = useState(0)
   const [summedData, setSummedData] = useState({})
+  const [averagedData, setAveragedData] = useState([])
+  const [averagedObjects, setAveragedObjects] = useState({})
   const [visualSleepHours, setVisualSleepHours] = useState({})
   const [visualPerformanceHours, setVisualPerformanceHours] = useState({})
   const [refreshKey, setRefreshKey] = useState(0);
@@ -98,29 +100,50 @@ const Dashboard = ({setAuthenticationStatus}) => {
       stressLevel: [],
     };
 
+    var averagedObjects = {
+      dietaryChoices: {},
+      mentalHealth: {},
+      performanceRating: {},
+      physicalHealth: {},
+      sleepHours: {},
+      stressLevel: {},
+    }
+
     const columns = ['dietaryChoices', 'performanceRating', 'sleepHours', 'stressLevel', 'mentalHealth', 'physicalHealth'];
 
     dashboardData.forEach((val) => {
       var curr_date = val.date;
 
-      // Summing all values by date
       columns.forEach((column) => {
         if (summedData[column][curr_date] === undefined) {
-          summedData[column][curr_date] = val[column];
+          summedData[column][curr_date] = parseInt(val[column]);
+          averagedObjects[column][curr_date] = { sum: parseInt(val[column]), count: 1 };
         } else {
-          summedData[column][curr_date] += val[column];
+          summedData[column][curr_date] += parseInt(val[column]);
+          averagedObjects[column][curr_date].sum += parseInt(val[column]);
+          averagedObjects[column][curr_date].count += 1;
         }
       });
 
       // Averaging all values
       columns.forEach((column) => {
-          averagedData[column].push(val[column]);
+        averagedData[column].push(val[column]);
       });
     });
 
-    getAverage(averagedData.mentalHealth, setAvgMentalHealth)
-    getAverage(averagedData.physicalHealth, setAvgPhysicalHealth)
-    setSummedData(summedData)
+    // Define a function to calculate the average of an array
+    function getAverage(arr) {
+      if (arr.length === 0) return 0;
+      return arr.reduce((total, val) => total + val, 0) / arr.length;
+    }
+
+    // Calculate and set the averages
+    setAvgMentalHealth(getAverage(averagedData.mentalHealth));
+    setAvgPhysicalHealth(getAverage(averagedData.physicalHealth));
+
+    setSummedData(summedData);
+    setAveragedData(averagedData);
+    setAveragedObjects(averagedObjects); 
   }, [dashboardData]);
 
   // Filtering sleepHours to only include the last 30 days of data
@@ -130,7 +153,6 @@ const Dashboard = ({setAuthenticationStatus}) => {
       const performanceData = summedData.performanceRating
       const currentDate = new Date();
 
-  
       // Calculate the date 30 days ago from today
       const thirtyDaysAgo = new Date(currentDate);
       thirtyDaysAgo.setDate(currentDate.getDate() - 30);
@@ -234,7 +256,7 @@ const Dashboard = ({setAuthenticationStatus}) => {
       <div className="main-content">
         <div className="grid-container">
         <div className="grid-item item1">
-          <SleepHoursChart sleepData={visualSleepHours} performanceData={visualPerformanceHours} key={refreshKey}/>
+          <SleepHoursChart sleepData={visualSleepHours} performanceData={visualPerformanceHours} averages={averagedObjects} key={refreshKey} selectedPlayer={selectedUser}/>
         </div>
           <div className="grid-item item2">
             <ProgressBar title={"Avg Mental"} value={avgMentalHealth} key={refreshKey}/> 
