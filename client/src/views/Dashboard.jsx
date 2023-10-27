@@ -7,7 +7,7 @@ import { useHistory } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 import { auth } from '../config/firebase';
 import { db } from '../config/firebase';
-import { getDocs, collection } from 'firebase/firestore'
+import { getDoc, getDocs, collection, doc, updateDoc } from 'firebase/firestore'
 
 // The Dashboard component serves as the application's homepage, acting as a central hub for coaches and players to analyze
 // aggregated responses and personal data derived from their survey responses, presented in the form of graphs and metrics.
@@ -18,13 +18,14 @@ import { getDocs, collection } from 'firebase/firestore'
 // to structure each individual data visualization. 
 
 
-const Dashboard = ({setAuthenticationStatus}) => {
+const Dashboard = ({setAuthenticationStatus, isAdmin, setIsAdmin }) => {
   const history = useHistory();
   const [surveyList, setSurveyList] = useState([]);
   const [users, setUsers] = useState([]);
   const surveyCollectionRef = collection(db, "survey");
   const usersCollectionRef = collection(db, "users");
   const [selectedUser, setSelectedUser] = useState("All Players");
+  const [selectedDashboard, setSelectedDashboard] = useState("Daily Update")
   const [dashboardData, setDashboardData] = useState([])
   const [avgMentalHealth, setAvgMentalHealth] = useState(0)
   const [avgPhysicalHealth, setAvgPhysicalHealth] = useState(0)
@@ -33,6 +34,15 @@ const Dashboard = ({setAuthenticationStatus}) => {
   const [averagedObjects, setAveragedObjects] = useState({})
   const [visualSleepHours, setVisualSleepHours] = useState({})
   const [visualPerformanceHours, setVisualPerformanceHours] = useState({})
+  const [dailyUpdateData, setDailyUpdateData] = useState({
+    Offense: '',
+    Defense: '',
+    Quote: '',
+    Joke: '',
+    Will: '',
+    Music: '',
+    lastModified: '',
+  });
   const [refreshKey, setRefreshKey] = useState(0);
 
 
@@ -54,13 +64,113 @@ const Dashboard = ({setAuthenticationStatus}) => {
         const data = await getDocs(usersCollectionRef);
         const filteredData = data.docs.map((doc) => ({...doc.data(), id: doc.id}))
         const names = filteredData.map((obj) => obj.name);
+
+        // Checking to see if the user logged in is an admin or not
+        filteredData.forEach((obj) => {
+          if (obj.email === auth?.currentUser?.email && obj.admin !== false) {
+            setIsAdmin(true);
+          } 
+        });
+        
         setUsers(names)
       } catch(err) {
         console.log(err);
       }
     }
+
+    const getTodaysUpdates = async () => {
+      try {
+        const dailyRef = doc(db, "DailyUpdate", "DailyDocID");
+        const snapshot = await getDoc(dailyRef);
+        const data = snapshot.data();
+        const currentDate = new Date();
+        const currentDateString = currentDate.toLocaleDateString("en-US")
+        const dataLastModified = new Date(data.lastModified);
+        currentDate.setHours(0, 0, 0, 0);
+        dataLastModified.setHours(0, 0, 0, 0);
+        const timeDifference = currentDate - dataLastModified;
+        const daysDifference = timeDifference / (1000 * 60 * 60 * 24);
+
+        // Check if the difference is greater than or equal to 1 day
+        if (daysDifference >= 1) {
+          const offenseOptions = [
+            "2 ft stops",
+            "2 outs",
+            "no stand zone",
+            "early and opposite",
+            "screening angles",
+            "1 can't guard 2 spacing",
+            "draw 2 reads",
+            "high passes",
+            "push/pull",
+            "setting screens",
+          ];
+          const defenseOptions = [
+            "stunt on dribble",
+            "locate/chuck/carve",
+            "blast/quarters",
+            "exaggerated communication",
+            "limit 3s",
+            "quarters",
+            "move on every pivot or dribble",
+            "move on pivots",
+            "sprint to level of ball",
+          ];
+          
+          const names = [
+            "Jake", "Meelad", "Mitchell", "Gavin", "Jack", "Kahiau", "Dylan", "Josiah",
+            "Ryder", "Terry", "DJ", "Will", "Eli", "Aadem", "AJ", "Caymoe", "Gavin R.", "D'ante"
+          ];
+          
+          // Function to get a random element from an array
+          function getRandomElement(arr) {
+            const randomIndex = Math.floor(Math.random() * arr.length);
+            return arr[randomIndex];
+          }
+
+          const selectedNames = [];
+
+          // Function to select a distinct name from the names array
+          function getDistinctName() {
+            let name;
+            do {
+              name = getRandomElement(names);
+            } while (selectedNames.includes(name));
+            selectedNames.push(name);
+            return name;
+          }
+
+          // Get distinct names for Quote, Joke, and Will
+          const quoteName = getDistinctName();
+          const jokeName = getDistinctName();
+          const willName = getDistinctName();
+          const musicName = getDistinctName();
+
+          
+          const dataToUpdate = {
+            Offense: getRandomElement(offenseOptions),
+            Defense: getRandomElement(defenseOptions),
+            Quote: quoteName,
+            Joke: jokeName,
+            Will: willName,
+            Music: musicName,
+            lastModified: currentDateString,
+          };
+          
+          // Updating the doc and the page
+          await updateDoc(dailyRef, dataToUpdate);
+          setDailyUpdateData(dataToUpdate);
+        } else {
+          setDailyUpdateData(data);
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    }
+
     getSurveyList();
     getUsers();
+    getTodaysUpdates();
   }, [])
 
   // Handle the dropdown menu of a player selection
@@ -193,19 +303,6 @@ const Dashboard = ({setAuthenticationStatus}) => {
   const handleRefresh = () => {
     setRefreshKey((prevKey) => prevKey + 1);
   }
-  
-  // stressLevel, stressSources, sleepQuality, performanceRating
-
-
-  const getAverage = (arr, setState) => {
-    var sum = 0
-    var length = arr.length
-    arr.forEach((val) => {
-      sum += parseInt(val)
-    })
-    var avg = (sum / length).toFixed(2)
-    setState(avg)
-  }
 
   // Function that logs a user out and sends them to the login screen
   const logout = async () => {
@@ -220,12 +317,105 @@ const Dashboard = ({setAuthenticationStatus}) => {
   const survey = async () => {
     history.push("/survey");
   }
+
+  const navigateAdminPage = async () => {
+    history.push("/admin")
+  }
   
   const handleUserChange = (event) => {
     setSelectedUser(event.target.value);
   };
 
+  const handleDashboardChange = (event) => {
+    setSelectedDashboard(event.target.value);
+  }
+
+
+
+  function DataDashboard() {
+    return (
+      <div className="main-content">
+        <div className="grid-container">
+        <div className="grid-item item1">
+          <SleepHoursChart sleepData={visualSleepHours} performanceData={visualPerformanceHours} averages={averagedObjects}  selectedPlayer={selectedUser} key={refreshKey}/>
+        </div>
+          <div className="grid-item item2">
+            <ProgressBar title={"Avg Mental"} value={avgMentalHealth} key={refreshKey}/> 
+          </div>
+          <div className="grid-item item3">
+            <ProgressBar title={"Avg Physical"} value={avgPhysicalHealth} key={refreshKey}/> 
+          </div>
+          <div className="grid-item item9">
+            <Teammates surveyList={surveyList} currentUserEmail={auth?.currentUser?.email} key={refreshKey}/>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+
+
+
+  function DailyUpdate() {
+    const [leadershipBoard, setLeadershipBoard] = useState([]);
   
+    useEffect(() => {
+      const getLeadershipBoard = async () => {
+        const usersCollectionRef = collection(db, "users");
+        const data = await getDocs(usersCollectionRef);
+        const userData = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+        const sortedData = userData.sort((a, b) => parseInt(b.wins) - parseInt(a.wins));
+  
+        const lb = sortedData.map((user, index) => ({
+          Rank: index + 1, // Rank starts from 1
+          Name: user.name,
+          Wins: user.wins,
+        }));
+  
+        setLeadershipBoard(lb);
+      };
+  
+      getLeadershipBoard();
+    }, []);
+  
+    return (
+      <div className='daily-container'>
+        <div>
+          <table>
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Name</th>
+                <th>Wins</th>
+              </tr>
+            </thead>
+            <tbody>
+              {leadershipBoard.map((leader) => (
+                <tr key={leader.Rank}>
+                  <td>{leader.Rank}</td>
+                  <td>{leader.Name}</td>
+                  <td>{leader.Wins}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className='daily-flex-col'>
+          <span className='daily-flex-col'>
+            <div><b>Offense:</b> {dailyUpdateData.Offense ?? ""}</div>
+            <div><b>Defense:</b> {dailyUpdateData.Defense ?? ""}</div>
+          </span>
+          <span className='daily-flex-col'>
+            <div><b>Quote:</b> {dailyUpdateData.Quote ?? ""}</div>
+            <div><b>Joke:</b> {dailyUpdateData.Joke ?? ""}</div>
+            <div><b>Will Emphasis:</b> {dailyUpdateData.Will ?? ""}</div>
+            <div><b>Music:</b> {dailyUpdateData.Music ?? ""}</div>
+          </span>
+          </div>
+      </div>
+    );
+  }
+    
   return (
     <div className="dashboard-container">
       <div className="navigation-bar">
@@ -236,6 +426,11 @@ const Dashboard = ({setAuthenticationStatus}) => {
           <div className="nav-item" onClick={survey}>
               <h3>Survey</h3>
           </div>
+          {isAdmin && (
+            <div className="nav-item" onClick={navigateAdminPage}>
+              <h3>Admin Page</h3>
+            </div>
+          )}
           <div>
             <select value={selectedUser} onChange={handleUserChange}>
               <option value="All Players">All Players</option>
@@ -246,6 +441,15 @@ const Dashboard = ({setAuthenticationStatus}) => {
               ))}
             </select>
           </div>
+          <div>
+            <select value={selectedDashboard} onChange={handleDashboardChange}>
+              <option value="Data Dashboard">Dashboard</option>
+              <option value="Daily Update">Daily Update</option>
+            </select>
+          </div>
+
+          
+          
           <button
             onClick={handleRefresh}>
             Refresh Data
@@ -259,22 +463,7 @@ const Dashboard = ({setAuthenticationStatus}) => {
         </div>
       </div>
 
-      <div className="main-content">
-        <div className="grid-container">
-        <div className="grid-item item1">
-          <SleepHoursChart sleepData={visualSleepHours} performanceData={visualPerformanceHours} averages={averagedObjects} key={refreshKey} selectedPlayer={selectedUser}/>
-        </div>
-          <div className="grid-item item2">
-            <ProgressBar title={"Avg Mental"} value={avgMentalHealth} key={refreshKey}/> 
-          </div>
-          <div className="grid-item item3">
-            <ProgressBar title={"Avg Physical"} value={avgPhysicalHealth} key={refreshKey}/> 
-          </div>
-          <div className="grid-item item9">
-            <Teammates surveyList={surveyList} currentUserEmail={auth?.currentUser?.email} key={refreshKey}/>
-          </div>
-        </div>
-      </div>
+      {selectedDashboard === "Data Dashboard" ? <DataDashboard /> : <DailyUpdate />}      
     </div>
   );
   

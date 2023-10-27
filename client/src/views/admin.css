@@ -1,0 +1,124 @@
+:root {
+      --background-blue: #004E98;
+      --orange: #FF6700;
+      --font-family: "Avenir", sans-serif;
+}
+
+body {
+      font-family: var(--font-family);
+      padding: 15px 25px 0 25px;
+      overflow: none;
+}
+    
+#wrapper {
+      width: 100%;
+      height: 100vh;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: start;
+      gap: 15px;
+}
+
+.flex {
+      display: flex;
+      justify-content: space-between;
+}
+
+button {
+      border-radius: 10px;
+      font-size: larger;
+      width: max-content;
+      text-align: center;
+}
+
+img:hover {
+      cursor: pointer;
+}
+
+
+
+
+
+
+
+/* Apply styles to the entire table */
+table {
+width: 100%;
+border-collapse: collapse; /* Merge borders */
+text-align: left; /* Align table text to the left */
+font-size: large;
+}
+
+/* Style table headers */
+th {
+background-color: #f2f2f2; /* Header background color */
+padding: 10px;
+}
+
+/* Style table rows */
+tr {
+border-bottom: 1px solid #ddd; /* Add a bottom border to separate rows */
+}
+
+/* Style table data cells */
+td {
+padding: 8px; /* Add padding for better readability */
+}
+
+
+
+
+.edit-tab {
+position: absolute;
+background-color: #004E98;
+width: 0;
+height: 0;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+box-shadow: rgba(0, 0, 0, 0.4) 0px 30px 90px;
+z-index: 1000;
+overflow: hidden;
+transition: all 0.3s ease-in-out;
+border-radius: 10px;
+}
+
+.edit-tab.active {
+      min-width: 300px;
+      max-width: 500px;
+width: 50vw;
+height: 75vh;
+}
+
+.form-wrapper {
+display: flex;
+justify-content: center;
+align-items: center;
+height: 100%; /* Center vertically within .edit-tab */
+overflow: auto;
+}
+
+.input-row {
+display: flex;
+align-items: center;
+margin: 10px 0;
+}
+
+.input-row label {
+flex: 1;
+text-align: right;
+margin-right: 10px;
+color: white;
+font-size: 22px;
+}
+
+.input-row input {
+flex: 2; /* Adjust this value based on your layout */
+width: 100%; /* Ensure all input fields have the same width */
+padding: 5px;
+}
+
+form button {
+      width: 100%;
+}

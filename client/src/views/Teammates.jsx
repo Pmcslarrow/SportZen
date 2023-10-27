@@ -34,10 +34,10 @@ const Teammates = ({ surveyList, currentUserEmail }) => {
       }
 
       // Update the totals and count
-      aggregatedDataMap[email].totalPhysicalHealth += physicalHealth;
-      aggregatedDataMap[email].totalMentalHealth += mentalHealth;
-      aggregatedDataMap[email].totalStressLevel += stressLevel;
-      aggregatedDataMap[email].totalPerformanceRating += performanceRating;
+      aggregatedDataMap[email].totalPhysicalHealth += parseInt(physicalHealth);
+      aggregatedDataMap[email].totalMentalHealth += parseInt(mentalHealth);
+      aggregatedDataMap[email].totalStressLevel += parseInt(stressLevel);
+      aggregatedDataMap[email].totalPerformanceRating += parseInt(performanceRating);
       aggregatedDataMap[email].count += 1;
     });
 

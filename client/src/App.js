@@ -4,9 +4,11 @@ import LoginPage from './views/LoginPage';
 import Dashboard from './views/Dashboard';
 import Survey from './views/Survey';
 import CreateAccount from './views/CreateAccount'
+import AdminPage from './views/AdminPage';
 
 function App() {
   const [isAuthenticated, setAuthenticationStatus] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false)
 
   useEffect(() => {
     console.log(isAuthenticated)
@@ -15,28 +17,25 @@ function App() {
   return (
     <Router>
       <Switch>
-
         <Route path="/" exact>
           {isAuthenticated ? <Dashboard setAuthenticationStatus={setAuthenticationStatus} /> : <LoginPage setAuthenticationStatus={setAuthenticationStatus} />}
         </Route>
-
         <Route path="/survey" render={(props) => <Survey {...props} setAuthenticationStatus={setAuthenticationStatus}  />} />
-
         <Route path="/createAccount" render={(props) => <CreateAccount {...props} setAuthenticationStatus={setAuthenticationStatus}  />} />
-        
+        <Route path="/admin" render={(props) => <AdminPage {...props} setAuthenticationStatus={setAuthenticationStatus} isAdmin={isAdmin} setIsAdmin={setIsAdmin}/> } />
         <ProtectedRoute
           path="/dashboard"
           component={(props) => (
             <Dashboard
               {...props}
               setAuthenticationStatus={setAuthenticationStatus}
+              isAdmin={isAdmin}
+              setIsAdmin={setIsAdmin}
             />
           )}
           isAuthenticated={isAuthenticated}
           failedRoute="/"
         />
-        
-
       </Switch>
     </Router>
   );

@@ -14,8 +14,9 @@
       flex-direction: column;
       width: 12%;
       min-width: 150px;
-      background-color:#FFFDFA;
-      padding: 15px;
+      background-color:white;
+      padding-right: 15px;
+      padding-top: 15px;
       justify-content: space-between;
 }
 
@@ -44,7 +45,7 @@
 
 
 
-/* GRID */
+/* GRID DASHBOARD */
 
 .main-content {
       flex: 1;
@@ -84,12 +85,6 @@
     }
     
 
-
-/*
-1 1 1 2
-5 5 5 3
-*/
-
 .chart-container {
       width: 100%; /* Adjust width as needed */
       height: 100%; /* Adjust height as needed */
@@ -106,14 +101,47 @@
       border: 2px solid black;
 }
 
-/*
 
-
-.item1 {
-      grid-column: span 3; 
+/* DAILY GRID */
+.daily-container {
+      margin-top: 20px;
+      height: 95vh;
+      width: 92%;
+      display: flex;
+      gap: 10px;
 }
-*/
 
+.daily-flex-col {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      gap: 10px;
+}
+
+.daily-flex-col span {
+      padding: 20px;
+}
+
+.daily-flex-col div {
+      font-family: var(--font-family);
+      font-size: 2rem;
+      align-items: center;
+}
+
+
+.daily-container div { width: 100%; }
+.daily-container div:nth-child(2) { margin-right: 15px; }
+
+.daily-container span {
+      height: 100%;
+      border: 1px solid black;
+}
+
+.daily-container table {
+      border: 1px solid black;
+      font-size: larger;
+      overflow-y: auto;
+}
 
 
 

@@ -62,7 +62,10 @@ function CreateAccount({ setAuthenticationStatus }) {
         await addDoc(userCollectionRef, {
           name: userName,
           email: auth?.currentUser?.email,
-          date: currentDate
+          date: currentDate,
+          admin: false,
+          wins: 0,
+          UID: auth?.currentUser?.uid,
         });
       };
 

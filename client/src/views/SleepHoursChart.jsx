@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useMemo } from 'react';
 import * as d3 from 'd3';
 
-const SleepHoursChart = ({ sleepData, performanceData, averages, key, selectedPlayer }) => {
+const SleepHoursChart = ({ sleepData, performanceData, averages, selectedPlayer }) => {
   const chartRef = useRef();
 
 // If the selected user is "All Players" average the values out 0-10
