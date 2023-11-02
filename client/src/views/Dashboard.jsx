@@ -364,14 +364,16 @@ const Dashboard = ({setAuthenticationStatus, isAdmin, setIsAdmin }) => {
         const usersCollectionRef = collection(db, "users");
         const data = await getDocs(usersCollectionRef);
         const userData = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-        const sortedData = userData.sort((a, b) => parseInt(b.wins) - parseInt(a.wins));
-  
+        const sortedData = userData
+                .filter(user => !user.admin)
+                .sort((a, b) => parseInt(b.wins) - parseInt(a.wins));
+
         const lb = sortedData.map((user, index) => ({
-          Rank: index + 1, // Rank starts from 1
-          Name: user.name,
-          Wins: user.wins,
+                Rank: index + 1,
+                Name: user.name,
+                Wins: user.wins,
         }));
-  
+        
         setLeadershipBoard(lb);
       };
   
